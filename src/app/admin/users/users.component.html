@@ -1,0 +1,112 @@
+<div class="admin-section">
+    <span [appSecurity]="['admin', 'super admin']" class='vt-section-title'><h5>{{app | ucfirst}}  <span class='add-course-icon'><a [routerLink]="['/user/new']"><i class="fa fa-user-plus"></i></a></span></h5></span>
+    <span class='row'>
+      <span class="col-md-12 d-content">
+        <span class="portlet dataTables_wrapper">
+          <div class="col-sm-12 col-md-7 dataTables_pager" *ngIf="pages > 1">
+            <div class="dataTables_paginate paging_simple_numbers pull-left" id="m_table_1_paginate">
+              <ul class="pagination">
+                <li class="paginate_button page-item previous" [ngClass]="{'disabled': page === 1}" 
+                    id="m_table_1_previous">
+  
+                  <a href="#" class="page-link" [routerLink]="['/admin/users/', page-1]">
+                    <i class="la la-angle-left"></i>
+                  </a>
+                </li>       
+                <li class="paginate_button page-item"
+                  [ngClass]="{'active': i+1 === page}"
+                  *ngFor="let item of [].constructor(pages); let i = index" >
+                  <a href="#" class="page-link" [routerLink]="['/admin/users/', i+1]">{{i+1}}</a>
+                </li>
+                <li class="paginate_button page-item next" id="m_table_1_next" [ngClass]="{'disabled': page === pages}">
+                  <a href="#" class="page-link" [routerLink]="['/admin/users/', page+1]"><i class="la la-angle-right"></i></a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <input 
+                class="form-control m-input m-input-lg pull-left search" 
+                type="text" [(ngModel)]="search" name="search" #name="ngModel" 
+                (ngModelChange)="onModelChange($event)"
+                placeholder="Search ..." 
+                id="search-text-input" />
+            </div>
+          </div>
+          <div class="m-datatable">
+            <table class="m-datatable-table">
+              <thead class="m-datatable-head">
+                <tr class="m-datatable-row">
+                  <th class="m-datatable-cell m-datatable-cell-check m-datatable-center">
+                    <span>
+                      <label class="m-checkbox">
+                        <input type="checkbox">
+                        <span ></span>
+                      </label>
+                    </span>
+                  </th>
+                  <th class="m-datatable-cell m-datatable-cell-email">
+                    <span>Email</span>
+                  </th>
+                  <th class="m-datatable-cell m-datatable-cell-name">
+                    <span>Name</span>
+                  </th>
+                  <th class="m-datatable-cell m-datatable-cell-comment-count">
+                    <span>comments</span>
+                  </th>
+                  <th class="m-datatable-cell m-datatable-cell-verified">
+                    <span>Verified?</span>
+                  </th>
+                  <th class="m-datatable-cell m-datatable-cell-role">
+                    <span>Role</span>
+                  </th>
+                  <th class="m-datatable-cell m-datatable-cell-action">
+                    <span>&nbsp;</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="m-datatable-body">
+                <tr class="m-datatable-row" *ngFor="let user of users; let i = index">
+                    <td class="m-datatable-cell m-datatable-cell-check m-datatable-center">
+                      <span>
+                        <label class="m-checkbox">
+                          <input type="checkbox" value="1">
+                          <span >
+                          </span>
+                      </label>
+                    </span>
+                  </td>
+                  <td class="m-datatable-cell m-datatable-cell-email" data-field="type">
+                    <span> {{user.email}} </span>
+                  </td>
+                  <td class="m-datatable-cell m-datatable-cell-name">
+                    <span>{{user.name}}</span>
+                  </td>
+                  <td class="m-datatable-cell m-datatable-cell-comment-count">
+                      <span>{{user.commentCount}}</span>
+                    </td>
+                  <td class="m-datatable-cell m-datatable-cell-verified">
+                    <span>{{ user.isVerified === true ? 'Yes': 'No'}}</span>
+                  </td>
+                  <td class="m-datatable-cell m-datatable-cell-role" >
+                    <div ngbDropdown class="d-inline-block">
+                      <span class='tag tag-wide tag-{{user.role.name | slugify}}' id="dropdownBasic-{{i}}" ngbDropdownToggle>{{ user.role.name | ucfirst }}</span>
+                      <div ngbDropdownMenu attr.aria-labelledby="dropdownBasic-{{1}}">
+                        <button class="dropdown-item" *ngFor="let role of roles" (click)="onSetRole(user._id, role.name)">{{role.name}}</button>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="m-datatable-cell m-datatable-cell-action">
+                    <span>
+                      <span (click)="onSendResetPassword(user)" style="margin-right: 8px;"><i class="fa fa-redo"></i></span>
+                      <span [routerLink]="['/user', user._id, 'edit']"><i class="fa fa-edit"></i></span>
+                      <span (click)="onDelete(user)"><i class="icon-trash"></i></span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </span>
+      </span>
+    </span>
+  </div>

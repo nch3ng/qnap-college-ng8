@@ -1,0 +1,66 @@
+<!-- <div [innerHTML]="headerHTML" appRunScripts></div> -->
+<div class="modal-container" [ngClass]="{'pop': firstOpened, 'out':!modalOpen}">
+  <div class="v-modal-overlay" (click)="onCloseModal()"></div>
+  <div class="v-modal-content">
+    <div class="v-modal-content-header">
+      <span class="modal-close" (click)="onCloseModal()">
+        <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+        width="200.000000pt" height="200.000000pt" viewBox="0 0 200.000000 200.000000"
+        preserveAspectRatio="xMidYMid meet">
+        
+          <g transform="translate(0.000000,200.000000) scale(0.100000,-0.100000)"
+          fill="#000000" stroke="none">
+          <path d="M239 1754 c-11 -13 37 -65 357 -385 l369 -369 -369 -369 c-217 -217
+          -366 -373 -362 -380 4 -6 15 -11 24 -11 9 0 180 163 379 362 l363 363 363
+          -363 c199 -199 370 -362 380 -362 9 0 17 8 17 17 0 10 -163 181 -362 380
+          l-363 363 370 370 c352 352 369 371 352 387 -16 17 -35 0 -387 -352 l-370
+          -370 -368 368 c-202 202 -370 367 -373 367 -4 0 -12 -7 -20 -16z"/>
+          </g>
+        </svg>
+         
+      </span>
+    </div>
+    <div class="v-modal-content-body video-container">
+      <div id="player"></div>
+    </div>
+  </div>
+</div>
+  
+<div id="main" class="row" [ngClass]="{'loaded': !loading, 'loading': loading}">
+  <article class="support-index">
+    <header #header [ngStyle]="{'display': bannerShow?'block':'none'}">
+      <div class="container">
+          <div *ngIf="true" class='pull-right log-btn'>
+              <span *ngIf="loggedIn">Hello, <a [routerLink]="['/admin/profile']">{{this.currentUser.name}}</a> | <a (click)="onSignout($event);">Logout</a></span>
+              <a href="#" [routerLink]="['/login']" [queryParams]="{returnUrl: returnUrl}" *ngIf="!loggedIn">Login</a>
+          </div>
+        <h2><a href="#">QNAP College</a></h2>
+        <section id="sp_search" class="sp-search no-h3 ">
+          <div>
+            <h3>Search for topics</h3>
+            <div class="title">Welcome to QNAP College</div>
+            <div class="description">The place that you can get the most out of QNAP</div>
+            <form class="search-input" (ngSubmit)="onSubmit(f);" #f="ngForm">
+              <input id="search_input" type="text" name="keywords" [ngModel]="keywords" placeholder="Search by keyword" value="">
+            </form>
+          </div>
+        </section>
+      </div>
+    </header>
+    <div class="containloader">
+      <div class="background"></div> 
+      <div class="zgroup"> 
+        <div class="bigSqr">
+          <div class="square first"></div>
+          <div class="square second"></div>
+          <div class="square third"></div>
+          <div class="square fourth"></div>
+        </div>
+        
+      </div>
+    </div>
+    <router-outlet></router-outlet>
+  </article>
+</div>
+<div [innerHTML]="footerHTML"></div>
+<div href="#main" pageScroll [pageScrollOffset]="0" [pageScrollDuration]="500" id="go-to-top" class="icon-angle-up" [ngClass]="{'show': goToTop, 'hide': !goToTop}"></div>

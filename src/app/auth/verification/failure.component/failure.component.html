@@ -1,0 +1,13 @@
+<div class="panel" *ngIf="token_in_valid; else elseBlock">
+  <div class="alert-box">
+    <div class="alert alert-danger">
+      Token is in valid: <a style="cursor: pointer" (click)="resend()">resend the validation link</a></div>
+    </div>
+  </div>
+<ng-template #elseBlock>
+  <div class="alert-box">
+    <div class="alert alert-danger">
+      The user does not exist, please contact site administrator
+    </div>
+  </div>
+</ng-template>

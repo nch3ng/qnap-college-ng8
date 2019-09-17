@@ -1,0 +1,52 @@
+.main {
+  display: block;
+  margin: 5% auto;
+  max-width: 900px;
+
+  .tou_header {
+    .title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .updated {
+      margin: 20px auto;
+      font-weight: 700;
+    }
+  }
+
+  .tou_section {
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .content {
+      font-size: 14px;
+
+      .sub-title {
+        margin-top: 10px;
+        font-weight: 700;
+        font-size: 16px;
+        color: #333;
+      }
+      p {
+        margin: 20px 0;
+
+        .bold {
+          font-weight: 700;
+          color: #222;
+        }
+      }
+
+      ol {
+        
+        li {
+          // text-indent: .2rem;
+          list-style-type: decimal;
+          margin:4px;
+        }
+      }
+    }
+  }
+}
+

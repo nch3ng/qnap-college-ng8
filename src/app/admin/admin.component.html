@@ -1,0 +1,121 @@
+<!-- <a *ngIf="loggedIn" (click)="onSignout()" style='position: relative'>Sign out</a> -->
+<nav class="main-menu">
+  <ul>
+    <li>
+      <a href="#" [routerLink]="['/']">
+        <i class="fa fa-home fa-qnap fa-qnap-2x"></i>
+        <span class="nav-text">
+          QNAP College
+        </span>
+      </a>
+    </li>
+    <li [appSecurity]="['super admin','admin']">
+        <a href="#" [routerLink]="['/admin']">
+            <i class="fas fa-chart-line fa-qnap fa-qnap-2x"></i>
+            <span class="nav-text">
+                Dashboard
+            </span>
+        </a>
+      
+    </li>
+    <li [appSecurity]="['super admin','admin']">
+      <a href="#" [routerLink]="['/admin/courses']">
+        <!-- <fa-icon [icon]="faList" class='fa-qnap fa-qnap-2x'></fa-icon> -->
+        <i class="fas fa-list fa-qnap fa-qnap-2x"></i>
+        <span class="nav-text">
+            Courses
+        </span>
+      </a>
+    </li>
+    <li>
+        <a href="#" [routerLink]="['/admin/comments']">
+            <i class="fa fa-comment fa-qnap fa-qnap-2x"></i>
+            <span class="nav-text">
+                Comments
+            </span>
+        </a>   
+      </li>
+    <li [appSecurity]="['super admin', 'admin']">
+      <a href="#" [routerLink]="['/admin/users']">
+          <i class="fa fa-users fa-qnap fa-qnap-2x"></i>
+          <span class="nav-text">
+              Users
+          </span>
+      </a>   
+    </li>
+    <li>
+        <a href="#" [routerLink]="['/admin/profile']">
+            <i class="fas fa-toolbox fa-qnap fa-qnap-2x"></i>
+            <span class="nav-text">
+                Profile
+            </span>
+        </a>
+    </li>
+    <!-- <li>
+        <a href="#">
+            <i class="fa fa-bar-chart-o fa-qnap fa-qnap-2x"></i>
+            <span class="nav-text">
+                Graphs and Statistics
+            </span>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <i class="fa fa-font fa-qnap fa-qnap-2x"></i>
+            <span class="nav-text">
+                Typography and Icons
+            </span>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <i class="fa fa-table fa-qnap fa-qnap-2x"></i>
+            <span class="nav-text">
+                Tables
+            </span>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <i class="fa fa-map-marker fa-qnap fa-qnap-2x"></i>
+            <span class="nav-text">
+                Maps
+            </span>
+        </a>
+    </li>
+    <li>
+        <a href="#">
+            <i class="fa fa-info fa-qnap fa-qnap-2x"></i>
+            <span class="nav-text">
+                Documentation
+            </span>
+        </a>
+    </li> -->
+  </ul>
+
+  <ul class="logout">
+    <li>
+      <a (click)="onSignout()" style='cursor: pointer'>
+        <i class="fa fa-power-off fa-qnap fa-qnap-2x"></i>
+        <span class="nav-text">
+          Logout
+        </span>
+      </a>
+    </li>  
+</ul>
+</nav>
+<div class="area" [ngClass]="{ 'loading': loading }">
+  <div class="containloader">
+    <div class="background"></div> 
+    <div class="zgroup"> 
+      <div class="bigSqr">
+        <div class="square first"></div>
+        <div class="square second"></div>
+        <div class="square third"></div>
+        <div class="square fourth"></div>
+      </div>
+      
+    </div>
+  </div>
+  <router-outlet></router-outlet>
+</div>

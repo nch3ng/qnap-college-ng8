@@ -1,0 +1,132 @@
+<div class="login-wrapper" [ngClass]="{'form-success':signing, 'loading': loading}">
+	
+	<div class="containloader">
+		<div class="background"></div> 
+		<div class="zgroup"> 
+			<div class="bigSqr">
+				<div class="square first"></div>
+				<div class="square second"></div>
+				<div class="square third"></div>
+				<div class="square fourth"></div>
+			</div>
+			
+		</div>
+	</div>
+	<div class="login-container">
+		
+		<h1>Welcome to</h1>
+		<div class="logo-header">
+			<h1>QNAP College</h1>
+		</div>
+		<!-- <div class="zgroup"> 
+      <div class="bigSqr">
+        <div class="square first"></div>
+        <div class="square second"></div>
+        <div class="square third"></div>
+        <div class="square fourth"></div>
+      </div>
+		</div> -->
+		<div class='form-container'>
+		
+			<form class="form login-form" *ngIf="signin" (ngSubmit)="onSignin(f)" #f='ngForm'>
+				<div class="login-error col-7" *ngIf='loginError' [innerHTML]="loginErrorMsg"></div>
+				<div class="login-error col-7" *ngIf='verifyError'>This email hasn't been verified, <a style='text-decoration: underline; cursor: pointer' (click)="resend()">resend</a></div>
+				<div class="form-group col-7">
+					<input type="text" placeholder="Email" ngModel name="email" required [email]="true">
+				</div>
+				<div class="form-group col-7">
+					<input type="password" placeholder="Password" ngModel name="password" required>
+				</div>
+				
+				<div class="form-group col-7">
+					<button type="submit" id="login-button" class="login-button" [disabled]="f.invalid">Login</button>
+				</div>
+				<div class='option-line'>
+					Or sign in / sign up with
+				</div>
+				<div class="social-button-container">
+					<!-- <button id="twitter"></button> -->
+					<button type="button" id="facebook" (click)="onFacebookLogin(e);"></button>
+					<button type="button" id="googleplus" (click)="onGoogleLogin(e);"></button>
+					<!-- <div  ></div> -->
+				</div>
+				<div class="option-line policy">
+					By clicking Sign Up, you agree to our <a [routerLink]="['/termsofuse']" target='_blank'>Terms</a>, <a href="https://www.qnap.com/en/privacy-notice/qnap" target="_blank">Data Policy</a> and <a href="https://www.qnap.com/en/privacy-notice/qnap" target="_blank">Cookies Policy</a>. 
+				</div>
+				<div class='option-line'>
+					Don't have an account? <a [routerLink]="['/signup']"> Sign up</a>
+				</div>
+				<div class='option-line'>
+					<a [routerLink]="['/forget-password']" [queryParams]="{seed : seed}">Forget your password?</a>
+				</div>
+			</form>
+			<form class="form register-form" (ngSubmit)="onSignup(regf)" *ngIf="!signin" #regf='ngForm'>
+				<div class="login-error col-7" *ngIf='regError' [innerHTML]="regErrorMsg"></div>
+				<div class="form-group col-7"><input type="text" placeholder="Email" ngModel name="email" required [email]="true"></div>
+				<div class="form-group col-7"><input type="text" placeholder="First Name" ngModel name="firstName" required></div>
+				<div class="form-group col-7"><input type="text" placeholder="Last Name" ngModel name="lastName" required></div>
+				<div class="form-group col-7">
+					<div class="input-icon input-icon-right password-wrapper">
+						<input type="password" placeholder="Password" (keydown)="inputPassword(regf)" ngModel name="password" required #password>
+						<span class="input-icon_icon input-icon_icon-right" (click)="togglePassword()">
+							<span><i class="icon" [ngClass]="{'icon-eye': !showPassword, 'icon-eye-close': showPassword}"></i></span>
+						</span>
+						<div class="strength-lines">
+							<div class="line" 
+								[ngClass]="{'bg-transparent': regf.value.password === '', 'bg-red': (regf.value.password !== '' && passwordStrength === '') || passwordStrength === 'weak', 'bg-orange': passwordStrength === 'good' , 'bg-green': passwordStrength === 'strong'}"></div>
+							<div class="line"
+								[ngClass]="{'bg-transparent': passwordStrength === '' || passwordStrength === 'weak', 'bg-orange': passwordStrength === 'good' , 'bg-green': passwordStrength === 'strong'}"></div>
+							<div class="line bg-transparent"
+								[ngClass]="{'bg-transparent': passwordStrength === '' || passwordStrength === 'weak' || passwordStrength === 'good' , 'bg-green': passwordStrength === 'strong'}"></div>
+							</div>
+					</div>
+				</div>
+				<div class="form-group col-7">
+					<div class="input-icon input-icon-right">
+						<input 	type="password" 
+							placeholder="Confirm Password" 
+							ngModel 
+							name="confirm_password" 
+							required 
+							(blur)="onCheckPassword(regf)"
+							#confirmPassword> 
+						<span class="input-icon_icon input-icon_icon-right" (click)="toggleConfirmPassword()">
+							<span><i class="icon" [ngClass]="{'icon-eye': !showConfirmPassword, 'icon-eye-close': showConfirmPassword}"></i></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group col-7">
+					<button type="submit" id="reg-button" class="reg-button" [disabled]="regf.invalid">Sign Up</button>
+				</div>
+				
+				<div class='option-line'>
+						Or sign up with
+				</div>
+				<div class="social-button-container">
+					<!-- <button id="twitter"></button> -->
+					<button type="button" id="facebook" (click)="onFacebookLogin();"></button>
+					<button type="button" id="googleplus" (click)="onGoogleLogin();" [disabled]="socialReady"></button>
+				</div>
+				<div class="option-line policy">
+					By clicking Sign Up, you agree to our <a [routerLink]="['/termsofuse']" target='_blank'>Terms</a>, <a href="https://www.qnap.com/en/privacy-notice/qnap" target="_blank">Data Policy</a> and <a href="https://www.qnap.com/en/privacy-notice/qnap" target="_blank">Cookies Policy</a>. 
+				</div>
+				<div class='option-line' style='margin-top: 20px;'>
+					<a [routerLink]="['/login']">Go back to login page</a>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<ul class="bg-bubbles">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+</div>

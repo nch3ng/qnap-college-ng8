@@ -1,0 +1,259 @@
+ <!-- Single page share --> 
+<div id="main" class="row loading">
+  <article class="support-index">
+    <header #header>
+      <div class="container"> &nbsp;
+        <div *ngIf="commentEnabled" class='pull-right log-btn'>
+            <span *ngIf="loggedIn">Hello, <a [routerLink]="['/profile']">{{this.currentUser.name}}</a> | <a (click)="onSignout($event);">Logout</a></span>
+            <a href="#" [routerLink]="['/login']" [queryParams]="{returnUrl: returnUrl}" *ngIf="!loggedIn">Login</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="sp-section latest">
+      <div class="container">
+        <h4>
+          <span class="vt-section-title category">{{course.code_name}} - {{course.title}}<span class="add-course-icon"><a href="/"><i _ngcontent-c3="" class="fa fa-arrow-left"></i></a></span></span>
+          
+        </h4>
+      </div>
+    </section>
+    <section class='inner-video'>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12">
+            <div class="inner-flex-video">
+              <div class="flex-video widescreen">
+                <iframe width="420" height="315" [src]="youtubeSrc | safe" allowfullscreen=""></iframe>
+              </div>
+              <div style='display: inline-block; width:100%'>
+                <div class="tags" style="display: inline-block; width: 70%"> 
+                  Tags: <a class="tag" *ngFor="let tag of course.tags" [routerLink]="['/tag/', tag]">{{tag}}</a>
+                </div>
+                
+                <div [appSecurity]="['super admin','admin']" class='pull-right'><a class="edit-button" href="#" [routerLink]="['/course', this.course._id, 'edit']" [queryParams]="{returnUrl: returnUrl}">Edit</a></div>
+                <div *ngIf="course.slide_link" class='pull-right'><a class="download-slide" href="{{course.slide_link}}" target="_blank">Slideshare</a></div>
+                <div class='pull-right'><a class="fav-button" (click)="toggleFav()"><i [ngClass]="{'far': !favorited, 'fas': favorited}" class="fa-star"></i></a></div>
+              </div>
+              
+            </div>
+            <div class="col-md-12 video-desc single-post">
+              <div>
+                <p>
+                  <span><i class="fa fa-clock"></i>{{course.publishedDate | amDateFormat:'D MMMM YYYY' }}</span>
+                  <span><i class="fa fa-eye"></i>{{course.watched}}</span>
+                  <span (click)="onThumbup()"><i class="fa fa-thumbs-up"></i>{{course.like}}</span>
+                  <span><i class="fa fa-thumbs-down"></i>{{course.dislike}}</span>
+                  <span><i class="fa fa-comment"></i>{{course.commentCount}}</span>
+                  <span class="share-buttons addthis_inline_share_toolbox" data-url="THE URL" data-title="{{course.title}}" data-description="THE DESCRIPTION" data-media="THE IMAGE"></span>
+                </p>
+              </div>
+              <div>
+                {{ course.desc }}
+              </div>
+              <div class='comments' *ngIf="commentEnabled">
+                <div class='single-post-comments'>
+                  Comments: 
+                  <span *ngIf="!loggedIn">
+                    (<a href="#" [routerLink]="['/login']" [queryParams]="{returnUrl: returnUrl}">Log in</a> to comment)
+                  </span>
+                </div>
+                <div class="comment-wrap" *ngIf="loggedIn">
+                  <div class="photo">
+                    <div class="avatar"><span class="initials">{{currentUserAbbvName}}</span></div>  
+                  </div>
+                  <!-- <div class="photo">
+                      <div class="avatar" style="background-image: url('https://s3.amazonaws.com/uifaces/faces/twitter/dancounsell/128.jpg')"></div>
+                  </div> -->
+                  <div class="comment-block">
+                    <form action="">
+                      <textarea class='comment' [ngClass]="{'comment-error': commentError}" name="comment" id="comment" cols="30" rows="3" [(ngModel)]="comment" (keydown.enter)="onEnterComment($event); false" (keydown.shift.Enter)="true" placeholder="Add comment, Shift + Enter to change line..." (keydown)="onCommentCheckChange($event);" (blur)="onCommentCheckBlur($event);"></textarea>
+                      
+                    </form>
+                    <span class="pull-right" [ngStyle]="{'color': commentError ? 'red' : '#bbb', 'font-weight': 100}">{{commentLength}}/512</span><div *ngIf="commentError" class='comment-error-message'> {{commentErrorMessage}} </div>
+                  </div>
+                </div>
+                <div class="comment-wrap" *ngFor="let comment of comments">
+                    <div class="photo">
+                            <div class="avatar"><span class="initials">{{comment.poster_name}}</span></div>
+                      <!-- <div class="avatar"></div>  -->
+                      <!-- <div class="avatar" style="background-image: url('https://s3.amazonaws.com/uifaces/faces/twitter/jsa/128.jpg')"></div> -->
+                    </div>
+                    <div class="comment-block">
+                        <p class="comment-text" [innerHTML]="comment.comment"></p>
+                        <div class="bottom-comment">
+                            <div class="comment-date">{{comment.createdAt | amDateFormat:'LL'}} @ {{ (comment.createdAt | amFromUnix) | amDateFormat:'hh:mmA'}}
+                              </div>
+                            <ul class="comment-actions">
+                              <li class="delete" *ngIf="currentUser && ( currentUser.role.level >= 9 || (comment.owner_id === currentUser._id))" (click)="onDelete(comment._id)"><i class="icon-trash"></i></li>
+                                <!-- <li class="complain">Complain</li>
+                                <li class="reply">Reply</li> -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 sidebar">
+            <div class="col-md-12">
+              <div class="widgetBox">
+                <div class="widgetTitle">
+                  <h5>Search Videos</h5>
+                </div>
+                <form id="searchform" (ngSubmit)="onSubmit(f);" #f="ngForm" role="search">
+                  <div class="input-group">
+                    <input class="input-group-field" type="text" placeholder="Enter your keyword" name="keywords" [ngModel]="keywords">
+                    <div class="input-group-button">
+                      <input type="submit" class="button" value="Submit">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="widgetBox">
+                <div class="widgetTitle">
+                  <h5>Most View Videos</h5>
+                </div>
+                <div class="widgetContent">
+                  <a class="media-object stack-for-small" *ngFor='let course of courses' [routerLink]="['/course/s/', course.slug]">
+                    <div class="media-object-section">
+                      <div class="recent-img">
+                        <img src= "{{'//img.youtube.com/vi/' + course.youtube_ref + '/sddefault.jpg'}}" alt="recent">
+                        <a href="#" class="hover-posts">
+                          <span><i class="fa fa-play"></i></span>
+                        </a>
+                      </div>
+                    </div>
+                    <div class="media-object-section">
+                      <div class="media-content">
+                        <h6><a href="#">{{course.title | shorten: 80}}</a></h6>
+                        <p><i class="fa fa-eye"></i><span>{{ course.watched }}</span><i class="fa fa-clock"></i><span>{{ course.publishedDate | amDateFormat:'D MMMM YYYY' }}</span></p>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <!-- <div class="media-object stack-for-small">
+                      <div class="media-object-section">
+                          <div class="recent-img">
+                              <img src= "http://placehold.it/120x80" alt="recent">
+                              <a href="#" class="hover-posts">
+                                  <span><i class="fa fa-play"></i></span>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="media-object-section">
+                          <div class="media-content">
+                              <h6><a href="#">The lorem Ipsumbeen the industry's standard.</a></h6>
+                              <p><i class="fa fa-user"></i><span>admin</span><i class="fa fa-clock-o"></i><span>5 january 16</span></p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="media-object stack-for-small">
+                      <div class="media-object-section">
+                          <div class="recent-img">
+                              <img src= "http://placehold.it/120x80" alt="recent">
+                              <a href="#" class="hover-posts">
+                                  <span><i class="fa fa-play"></i></span>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="media-object-section">
+                          <div class="media-content">
+                              <h6><a href="#">The lorem Ipsumbeen the industry's standard.</a></h6>
+                              <p><i class="fa fa-user"></i><span>admin</span><i class="fa fa-clock-o"></i><span>5 january 16</span></p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="media-object stack-for-small">
+                      <div class="media-object-section">
+                          <div class="recent-img">
+                              <img src= "http://placehold.it/120x80" alt="recent">
+                              <a href="#" class="hover-posts">
+                                  <span><i class="fa fa-play"></i></span>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="media-object-section">
+                          <div class="media-content">
+                              <h6><a href="#">The lorem Ipsumbeen the industry's standard.</a></h6>
+                              <p><i class="fa fa-user"></i><span>admin</span><i class="fa fa-clock-o"></i><span>5 january 16</span></p>
+                          </div>
+                      </div>
+                  </div>
+              </div> -->
+              <!-- <div class="widgetContent">
+                  <div class="video-box thumb-border">
+                      <div class="video-img-thumb">
+                          <img src="images/video-thumbnail/7.jpg" alt="most viewed videos">
+                          <a href="#" class="hover-posts">
+                              <span><i class="fa fa-play"></i>Watch Video</span>
+                          </a>
+                      </div>
+                      <div class="video-box-content">
+                          <h6><a href="#">There are many variations of passage. </a></h6>
+                          <p>
+                              <span><i class="fa fa-user"></i><a href="#">admin</a></span>
+                              <span><i class="fa fa-clock-o"></i>5 January 16</span>
+                              <span><i class="fa fa-eye"></i>1,862K</span>
+                          </p>
+                      </div>
+                  </div>
+                  <div class="video-box thumb-border">
+                      <div class="video-img-thumb">
+                          <img src="images/widget-most1.png" alt="most viewed videos">
+                          <a href="#" class="hover-posts">
+                              <span><i class="fa fa-play"></i>Watch Video</span>
+                          </a>
+                      </div>
+                      <div class="video-box-content">
+                          <h6><a href="#">There are many variations of passage. </a></h6>
+                          <p>
+                              <span><i class="fa fa-user"></i><a href="#">admin</a></span>
+                              <span><i class="fa fa-clock-o"></i>5 January 16</span>
+                              <span><i class="fa fa-eye"></i>1,862K</span>
+                          </p>
+                      </div>
+                  </div>
+                  <div class="video-box thumb-border">
+                      <div class="video-img-thumb">
+                          <img src="images/widget-most2.png" alt="most viewed videos">
+                          <a href="#" class="hover-posts">
+                              <span><i class="fa fa-play"></i>Watch Video</span>
+                          </a>
+                      </div>
+                      <div class="video-box-content">
+                          <h6><a href="#">There are many variations of passage. </a></h6>
+                          <p>
+                              <span><i class="fa fa-user"></i><a href="#">admin</a></span>
+                              <span><i class="fa fa-clock-o"></i>5 January 16</span>
+                              <span><i class="fa fa-eye"></i>1,862K</span>
+                          </p>
+                      </div>
+                  </div>
+                  <div class="video-box thumb-border">
+                      <div class="video-img-thumb">
+                          <img src="images/widget-most3.png" alt="most viewed videos">
+                          <a href="#" class="hover-posts">
+                              <span><i class="fa fa-play"></i>Watch Video</span>
+                          </a>
+                      </div>
+                      <div class="video-box-content">
+                          <h6><a href="#">There are many variations of passage. </a></h6>
+                          <p>
+                              <span><i class="fa fa-user"></i><a href="#">admin</a></span>
+                              <span><i class="fa fa-clock-o"></i>5 January 16</span>
+                              <span><i class="fa fa-eye"></i>1,862K</span>
+                          </p>
+                      </div>
+                  </div>
+              </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+</div>

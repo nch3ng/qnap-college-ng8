@@ -1,0 +1,74 @@
+<div class="admin-section">
+  <span class='vt-section-title'>
+    <span class='pull-left'><h5>{{app | ucfirst}}</h5></span>
+    <span class='subheader pull-right'>
+        <lib-daterangepicker 
+        [(start)]="start" 
+        [(end)]="end" 
+        format="MM-DD-YYYY" 
+        outputFormat="MM-DD-YYYY"
+        opens="left" 
+        [pill]="true"
+        (complete)="onSelected($event)"
+        ></lib-daterangepicker>
+ 
+      <!-- <span class="subheader-daterange" id="dashboard-daterangepicker">
+        <span class="subheader-daterange-label">
+          <span class="subheader-daterange-title"></span>
+          <span class="subheader-daterange-date font-brand">May 25 - Jun 23</span>
+        </span>
+        <a href="#" class="btn btn-sm btn-brand m-btn m-btn-icon btn-icon-only btn-custom btn-pill">
+          <i class="la la-angle-down"></i>
+        </a>
+      </span> -->
+    </span>
+  </span>
+  <span class='row'>
+    <span class="col-md-12 d-content">
+      <div class="row">
+        <div class="col-md-4">
+          <span class="portlet">
+            <div class="portlet-head">
+              <div class="portlet-head-caption">
+                <div class="portlet-head-title">
+                  <h3 class="portlet-head-text">
+                    Most Searched Keywords
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div class="portlet-body">
+              <div class="widget-4">
+                <div class="widget-4-item" *ngFor="let keyword of keywords">
+                  <span class='widget-4-item-name'>{{keyword.text}}</span>
+                  <span class='widget-4-item-times'>{{keyword.times}}</span>
+                </div>
+              </div>
+            </div>
+          </span>
+        </div>
+        <div class="col-md-8">
+            <span class="portlet">
+              <div class="portlet-head">
+                <div class="portlet-head-caption">
+                  <div class="portlet-head-title">
+                    <h3 class="portlet-head-text">
+                      Recent Course Stats
+                    </h3>
+                  </div>
+                </div>
+              </div>
+              <div class="portlet-body">
+                <div class="widget-4">
+                  <div class="widget-4-item" *ngFor="let cs of courseStats">
+                    <span class='widget-4-item-name'>{{cs.courses[0].title}}</span>
+                    <span class='widget-4-item-times'>{{cs.count}}</span>
+                  </div>
+                </div>
+              </div>
+            </span>
+          </div>
+      </div>
+    </span>
+  </span>
+</div>

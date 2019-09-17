@@ -1,0 +1,41 @@
+.m-datatable-cell {
+  &.m-datatable-cell-role {
+    overflow: inherit;
+  }
+  .tag {
+    background: #eaeaea;
+    color: #444;
+    font-size: 0.8rem;
+    line-height: 20px;
+    min-height: 20px;
+    min-width: 20px;
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+    padding: 0px 3px;
+    border-radius: .75rem;
+    cursor: pointer;
+  }
+  .tag-wide {
+    letter-spacing: 0.6px;
+    padding: 4px 10px;
+    border-radius: .15rem;
+  }
+  .tag-super-admin {
+    background-color: #716aca;
+    color: #fff;
+  }
+
+  .tag-admin {
+    color: #f6fcfb;
+    background-color: #45ccb1;
+  }
+}
+
+
+
+input.search {
+  display: inline-block;
+  margin: 20px 20px;
+  width: 40%;
+}

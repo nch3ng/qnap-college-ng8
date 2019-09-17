@@ -1,0 +1,111 @@
+.portlet {
+  .portlet-head {
+    .portlet-head-caption {
+      .portlet-head-title {
+        .portlet-head-text {
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-align: center;
+          -ms-flex-align: center;
+          align-items: center;
+          font-size: 1.2rem;
+          font-weight: 500;
+          font-family: Roboto;
+          margin: 0;
+          padding: 0;
+          color: #575962;
+        }
+      }
+    }
+  }
+
+  .portlet-body {
+    padding-top: 1.2rem;
+    .widget-4 {
+      .widget-4-item {
+        width: 100%;
+        display: table;
+        padding-top: .3rem;
+        padding-bottom: .3rem;
+        border-bottom: .07rem dashed #ebedf2;
+
+        .widget-4-item-name {
+          display: table-cell;
+          width: 100%;
+          padding-left: 1.2rem;
+          padding-right: 1.2rem;
+          font-size: 1rem;
+          vertical-align: middle;
+        }
+        .widget-4-item-times {
+          color: #f4516c!important;
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.subheader {
+  margin-bottom: 0.5rem;
+  .subheader-daterange {
+    display: inline-block;
+    border-radius: 2rem;
+    padding: 5px;
+    cursor: pointer;
+    background: #fff;
+
+    .btn {
+      width: 32px!important;
+      height: 32px!important;
+    }
+
+    .subheader-daterange-label {
+      padding: .7rem .75rem .7rem 1.5rem;
+  
+      .subheader-daterange-title {
+        display: inline-block;
+        font-weight: 400;
+        color: #aaaeb8;
+      }
+      .subheader-daterange-date {
+        display: inline-block;
+        font-weight: 500;
+      }
+      
+      .font-brand {
+        color: #716aca!important;
+      }
+    }
+  }
+}
+
+.btn {
+  &.btn-pill {
+    border-radius: 60px;
+  }
+
+  &.btn-brand {
+    color: #fff;
+    background-color: #716aca;
+    border-color: #716aca;
+  }
+
+  .btn-icon.btn-icon-only {
+    display: inline-block;
+    position: relative;
+    padding: 0!important;
+    width: 33px;
+    height: 33px;
+}
+
+  .btn.btn-custom {
+    padding: .75rem 2rem;
+    font-size: 1rem;
+    font-weight: 400;
+    font-family: Poppins;
+  }
+}
+

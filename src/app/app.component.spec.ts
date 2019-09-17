@@ -1,8 +1,12 @@
+import { MetaService } from '@ngx-meta/core';
+import { NgxScreensizeService } from './modules/ngx-screensize/_services/ngx-screensize.service';
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
+  const screenSizeServiceSpy = jasmine.createSpyObj('NgxScreensizeService', ['getScreensize']);
+  const metaServiceSpy = jasmine.createSpyObj('metaServiceSpy', ['setTag']);
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -11,6 +15,10 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      providers: [
+        { provide: NgxScreensizeService, useValue: screenSizeServiceSpy },
+        { provide: MetaService, useValue: metaServiceSpy }
+      ]
     }).compileComponents();
   }));
 
@@ -18,18 +26,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'qnap-college-ng8'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('qnap-college-ng8');
-  });
-
-  it('should render title in a h1 tag', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to qnap-college-ng8!');
   });
 });

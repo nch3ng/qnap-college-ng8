@@ -1,0 +1,142 @@
+<div class="admin-section">
+  <span [appSecurity]="['admin', 'super admin']" class='vt-section-title'><h5>{{app | ucfirst}}  <span class='add-course-icon'><a [routerLink]="['/admin/course/new']"><i class="icon-plus"></i></a></span></h5></span>
+  <span class='row'>
+    <span class="col-md-12 d-content">
+      <span class="portlet dataTables_wrapper">
+        <div class="col-sm-12 col-md-7 dataTables_pager">
+          <div class="dataTables_paginate paging_simple_numbers pull-left" id="m_table_1_paginate">
+            <ul class="pagination">
+              <li class="paginate_button page-item previous" [ngClass]="{'disabled': page === 1}" 
+                  id="m_table_1_previous">
+
+                <a href="#" class="page-link" [routerLink]="['/admin/courses/', page-1]">
+                  <i class="la la-angle-left"></i>
+                </a>
+              </li>       
+              <li class="paginate_button page-item"
+                [ngClass]="{'active': i+1 === page}"
+                *ngFor="let item of [].constructor(pages); let i = index" >
+                <a href="#" class="page-link" [routerLink]="['/admin/courses/', i+1]">{{i+1}}</a>
+              </li>
+              <li class="paginate_button page-item next" id="m_table_1_next" [ngClass]="{'disabled': page === pages}">
+                <a href="#" class="page-link" [routerLink]="['/admin/courses/', page+1]"><i class="la la-angle-right"></i></a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <input 
+              class="form-control m-input m-input-lg pull-left search" 
+              type="text" [(ngModel)]="search" name="search" #name="ngModel" 
+              (ngModelChange)="onModelChange($event)"
+              placeholder="Search ..." 
+              id="search-text-input" />
+          </div>
+        </div>
+        <div class="m-datatable">
+          <table class="m-datatable-table">
+            <thead class="m-datatable-head">
+              <tr class="m-datatable-row">
+                <th class="m-datatable-cell m-datatable-cell-check m-datatable-center" [appSecurity]="['admin', 'super admin']">
+                  <span>
+                    <label class="m-checkbox">
+                      <input type="checkbox">
+                      <span ></span>
+                    </label>
+                  </span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-codename">
+                  <span>Code Name</span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-title">
+                  <span>Topic</span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-category">
+                  <span>Category</span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-desc">
+                  <span>Description</span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-tags">
+                  <span>Tags</span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-date">
+                  <span>Date</span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-action" [appSecurity]="['admin', 'super admin']">
+                  <span>&nbsp;</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="m-datatable-body">
+              <tr class="m-datatable-row" *ngFor="let course of courses">
+                  <td class="m-datatable-cell m-datatable-cell-check m-datatable-center"[appSecurity]="['admin', 'super admin']">
+                    <span>
+                      <label class="m-checkbox">
+                        <input type="checkbox" value="1">
+                        <span >
+                        </span>
+                    </label>
+                  </span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-codename" data-field="type">
+                  <span>
+                    <span> {{course.code_name}} </span>
+                  </span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-title">
+                  <span>{{course.title}}</span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-category">
+                  <span class="">
+                    {{course.category | ucfirst}}
+                  </span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-desc">
+                  <span>{{course.desc}}</span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-tags">
+                  <span>
+                    <span class='tag' *ngFor="let tag of course.tags">{{tag}}</span>
+                  </span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-date">
+                  <span>
+                    {{course.publishedDate | amDateFormat: 'YYYY-MM-DD'}}
+                  </span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-action" [appSecurity]="['admin', 'super admin']">
+                  <span>
+                    <span [routerLink]="['/course', course._id, 'edit']"><i class="fa fa-edit"></i></span>
+                    <span (click)="onDelete(course)"><i class="icon-trash"></i></span>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-sm-12 col-md-7 dataTables_pager">
+
+          <div class="dataTables_paginate paging_simple_numbers" id="m_table_1_paginate">
+            <ul class="pagination">
+              <li class="paginate_button page-item previous" [ngClass]="{'disabled': page === 1}" 
+                  id="m_table_1_previous">
+
+                <a href="#" class="page-link" [routerLink]="['/admin/courses/', page-1]">
+                  <i class="la la-angle-left"></i>
+                </a>
+              </li>       
+              <li class="paginate_button page-item"
+                [ngClass]="{'active': i+1 === page}"
+                *ngFor="let item of [].constructor(pages); let i = index" >
+                <a href="#" class="page-link" [routerLink]="['/admin/courses/', i+1]">{{i+1}}</a>
+              </li>
+              <li class="paginate_button page-item next" id="m_table_1_next" [ngClass]="{'disabled': page === pages}">
+                <a href="#" class="page-link" [routerLink]="['/admin/courses/', page+1]"><i class="la la-angle-right"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </span>
+    </span>
+  </span>
+</div>

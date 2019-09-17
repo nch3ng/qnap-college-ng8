@@ -1,0 +1,97 @@
+<div class="comments-section">
+  <span class='vt-section-title'><h5>{{app | ucfirst}} </h5></span>
+  <span class='row'>
+    <span class="col-md-12 d-content">
+      <span class="portlet dataTables_wrapper">
+        <div class="col-sm-12 col-md-7 dataTables_pager" *ngIf="pages > 1">
+          <div class="dataTables_paginate paging_simple_numbers pull-left" id="m_table_1_paginate">
+            <ul class="pagination">
+              <li class="paginate_button page-item previous" [ngClass]="{'disabled': page === 1}" 
+                  id="m_table_1_previous">
+
+                <a href="#" class="page-link" [routerLink]="['/admin/comments/', page-1]">
+                  <i class="la la-angle-left"></i>
+                </a>
+              </li>       
+              <li class="paginate_button page-item"
+                [ngClass]="{'active': i+1 === page}"
+                *ngFor="let item of [].constructor(pages); let i = index" >
+                <a href="#" class="page-link" [routerLink]="['/admin/comments/', i+1]">{{i+1}}</a>
+              </li>
+              <li class="paginate_button page-item next" id="m_table_1_next" [ngClass]="{'disabled': page === pages}">
+                <a href="#" class="page-link" [routerLink]="['/admin/comments/', page+1]"><i class="la la-angle-right"></i></a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <input 
+              class="form-control m-input m-input-lg pull-left search" 
+              type="text" [(ngModel)]="search" name="search" #name="ngModel" 
+              (keydown)="onSearch($event)"
+              placeholder="Search ..." 
+              id="search-text-input" />
+          </div>
+        </div>
+
+        <div class="m-datatable">
+          <table class="m-datatable-table">
+            <thead class="m-datatable-head">
+              <tr class="m-datatable-row">
+                <!-- <th class="m-datatable-cell m-datatable-cell-check m-datatable-center">
+                  <span>
+                    <label class="m-checkbox">
+                      <input type="checkbox">
+                      <span ></span>
+                    </label>
+                  </span>
+                </th> -->
+                <th class="m-datatable-cell m-datatable-cell-course m-datatable-center">
+                  <span>Date</span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-course">
+                  <span>Course ID</span>
+                </th>
+                <th class="m-datatable-cell m-datatable-cell-comment">
+                  <span>Comment</span>
+                </th>
+                <!-- <th class="m-datatable-cell m-datatable-cell-action">
+                  <span>&nbsp;</span>
+                </th> -->
+              </tr>
+            </thead>
+            <tbody class="m-datatable-body">
+              <tr class="m-datatable-row" *ngFor="let comment of comments; let i = index">
+                <!-- <td class="m-datatable-cell m-datatable-cell-check m-datatable-center">
+                  <span>
+                    <label class="m-checkbox">
+                      <input type="checkbox" value="1">
+                      <span >
+                      </span>
+                    </label>
+                  </span>
+                </td> -->
+                <td class="m-datatable-cell m-datatable-cell-course m-datatable-center" data-field="type">
+                  <span> {{comment.createdAt | amDateFormat:'YYYY/MM/DD'}}</span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-course" data-field="type">
+                  <span> <a [routerLink]="['/course', 's', comment.course.slug]">{{comment.course.code_name}} </a></span>
+                </td>
+                <td class="m-datatable-cell m-datatable-cell-comment">
+                  <span>{{comment.comment}}</span>
+                </td>
+                
+                <!-- <td class="m-datatable-cell m-datatable-cell-action">
+                  <span>
+                    <span style="margin-right: 8px;"><i class="fa fa-redo"></i></span>
+                    <span><i class="fa fa-edit"></i></span>
+                    <span><i class="icon-trash"></i></span>
+                  </span>
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </span>
+    </span>
+  </span>
+</div>

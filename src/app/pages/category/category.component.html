@@ -1,0 +1,73 @@
+<section class="sp-section category-section">
+    <div class="container breadcrumbs">
+      <a [routerLink]="['/']">Home</a> > 
+      {{ !category ? (!tag? 'Search Result' : 'Tag > ' + tag) : ('Category > ' + category | ucfirst) }}
+    </div>
+</section>
+<section class="sp-section latest category" style='padding-top: 0px;'>
+  <div class="container">
+    <h4>
+      <span class="vt-section-title category">
+            {{ !category ? (!tag? 'Videos' : 'Tag') : ('Category') }}
+         of {{ !category ? (!tag? 'Search Result' : tag) : (category | ucfirst) }}
+        <span class="grid-options">
+          <span (click)="onGridSelect(3)"><i class="fa fa-th"></i></span>
+          <span (click)="onGridSelect(2)"><i class="fa fa-th-large"></i></span>
+        </span>
+        <span class="video-count">Total: {{courses.length}} videos</span>
+        
+      </span>
+    </h4>
+    <div class="col-md-12">
+      <div class="row videos-section">
+        <div class="col-md-5 video-item" *ngFor="let course of courses; let i = index;" [ngClass]="{'offset-md-1': ((i % 2) === 0 && gridCol === 2), 'col-md-5':gridCol===2, 'col-md-4':gridCol===3}">
+          <div class="video-card">
+            <div class="video-card-body">
+              <div class="video-card-picture" (click)="onModalPop(course)">
+                <a>
+                  <img alt="" src="{{'//img.youtube.com/vi/' + course.youtube_ref + '/mqdefault.jpg'}}">
+                  <div class="play-icon">
+                    <span><i class="fa fa-4x fa-play-circle-o"></i></span>
+                  </div>
+                </a>
+                <div class="video-stats clearfix">
+                  <div class="thumb-stats pull-left">
+                    <span>{{course.code_name}}</span>
+                  </div>
+                  <div class="thumb-stats pull-left">
+                      <i class="fa fa-heart"></i>
+                      <span>{{course.like}}</span>
+                  </div>
+                  <div class="thumb-stats pull-right">
+                      <span>{{course.duration | momentDuration}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="video-card-content" [routerLink]="['/course/s/', course.slug]">
+                <div class="video-card-content-header">
+                  <div class="header-info">
+                    {{course.title}}
+                  </div>
+                  <div class="header-stats">
+                    <div class="header-stats-number">
+                      {{course.watched}}
+                    </div>
+                    <div class="header-stats-comment">
+                      Watched
+                    </div>
+                    <div class="header-stats-slide">
+                      <a (click)="onNavigate($event)" target='_blank' [attr.href]="course.slide_link" *ngIf="course.slide_link"><i class='far fa-file-powerpoint'></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="video-card-content-body">
+                    {{course.desc}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

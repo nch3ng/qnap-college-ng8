@@ -1,0 +1,67 @@
+.profile-info, .change-password, .account {
+  padding: 50px 100px;
+}
+
+.profile-container {
+  max-width: 700px;
+}
+
+.account {
+
+  .btn-lg {
+    height: 3.5em;
+  }
+  .title {
+    color: #444;
+    padding: 4px 0;
+    border-bottom: 1px solid #ced4da;;
+    font-size: 1.3em;
+    display: block;
+    width: 100%;
+    margin: 20px 0;
+  }
+
+  .desc {
+    font-size: 1em;
+    display: block;
+    margin: 20px 0;
+    padding: 0;
+  }
+  .name-fields {
+    font-size: 1em;
+    margin: 20px 0;
+    padding: 0;
+  }
+  .confirm-field {
+    opacity: 0;
+    display: inline-block;
+    &.enabled {
+      transition: all 0.5s;
+      opacity: 1;
+    }
+  }
+  .first-name {
+    margin-right: 20px;
+  }
+  .rounded-2 {
+    border-radius: 5px;
+  }
+}
+
+.change-password-error {
+  
+  margin: 15px;
+  padding: 14px 20px 14px;
+  border-radius: 5px;
+  width: 100%;
+  background-color: #ca3535;
+  color: #fff;
+}
+
+.password-wrapper .strength-lines {
+  bottom: 10px;
+}
+
+.input-icon .input-icon_icon.input-icon_icon-right {
+  height: 3.5em;
+}

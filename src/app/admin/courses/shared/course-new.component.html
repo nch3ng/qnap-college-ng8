@@ -1,0 +1,100 @@
+<div class="admin-section">
+  <span class='vt-section-title'><h5>{{app | ucfirst}} <span class='add-course-icon'><a [routerLink]="['/courses']"><i class="fa fa-arrow-left"></i></a></span></h5></span>
+  <span class='row'>
+    <span class="col-md-12 d-content">
+      <span class="portlet">
+        <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+          <div class="form-group m-form__group row">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              Topic
+            </label>
+            <div class="col-6">
+              <input class="form-control m-input" type="text" [(ngModel)]="course.title" name='title' #name="ngModel" required placeholder="Topic" id="title-text-input" (ngModelChange)="onModelChange($event)">
+            </div>
+          </div>
+          <div class="form-group m-form__group row">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              Code Name
+            </label>
+            <div class="col-6">
+              <input class="form-control m-input m-input-lg" type="text" [(ngModel)]="course.code_name" name="code_name" required #name="ngModel" placeholder="Code Name" id="codename-text-input">
+            </div>
+          </div>
+          <div class="form-group m-form__group row">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              Youtube Reference
+            </label>
+            <div class="col-6">
+              <input class="form-control m-input m-input-lg" type="text" [(ngModel)]="course.youtube_ref" required name="youtube_ref" required #name="ngModel" placeholder="Youtube Reference" id="youtubeRef-text-input">
+            </div>
+          </div>
+          <div class="form-group m-form__group row">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              Tags
+            </label>
+            <div class="col-6">
+              <tag-input [(ngModel)]='course.tags' #name="ngModel" name="tags" placeholder="+ Tag" secondaryPlaceholder="Enter Tags" theme='bootstrap3-info' class='form-control'></tag-input>
+              <!-- <input class="form-control m-input" type="text" value="" placeholder="Tags" id="tags-text-input"> -->
+            </div>
+          </div>
+          <div class="form-group m-form__group row">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              Category
+            </label>
+            <div class="col-6">
+                <ng-select  class=""
+                  [ngModel]="course.category | ucfirst"
+                  (ngModelChange)="course.category=$event"
+                  [items]="categories"
+                  bindLabel="name"
+                  bindValue="name"
+                  #name="ngModel"
+                  placeholder="Select Category"
+                  name="category"
+                  required>
+                </ng-select>
+            </div>
+          </div>
+          <div class="form-group m-form__group row" *ngIf="func==='edit'">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              Date
+            </label>
+            <div class="col-6">
+              <input class="form-control m-input" disabled type="text" value="{{course.publishedDate  | amDateFormat: 'YYYY-MM-DD'}}" placeholder="Date" id="date-text-input">
+            </div>
+          </div>
+          <div class="form-group m-form__group row">
+              <label for="slide-link-text-input" class="col-2 col-form-label offset-md-2">
+                Slide Link
+              </label>
+              <div class="col-6">
+                <input class="form-control m-input m-input-lg" type="text" [(ngModel)]="course.slide_link" name="slide_link" #name="ngModel" placeholder="Slide Link" id="slide_link-text-input">
+              </div>
+            </div>
+          <div class="form-group m-form__group row">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              Description
+            </label>
+            <div class="col-6">
+              <textarea class="form-control m-input m-input--air" id="desc-textarea" rows="3" name="desc" #name="ngModel" required  [(ngModel)]="course.desc" ></textarea>
+            </div>
+          </div><div class="form-group m-form__group row">
+              <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+                Slug
+              </label>
+              <div class="col-6">
+                <input class="form-control m-input m-input-lg" disabled type="text" [(ngModel)]="course.slug" name="slug" required #name="ngModel" placeholder="" id="slug-text-input">
+              </div>
+            </div>
+          <div class="form-group m-form__group row">
+            <div class="col-md-3 offset-md-8">
+              <button type="button" class="btn btn-danger btn-upload" [routerLink]="returnUrl ? [returnUrl] : ['/courses']">Back</button>
+              <button type="button" class="btn btn-secondary btn-upload">Reset</button>
+              <button class="btn btn-primary btn-upload" multipart="" [disabled]="f.invalid">Submit</button> 
+            </div>
+          </div>
+        </form>
+      </span>
+    </span>
+  </span>
+</div>

@@ -1,0 +1,41 @@
+<div class="admin-section">
+  <span class='vt-section-title'><h5>{{app | ucfirst}} <span class='add-course-icon'><a [routerLink]="['/users']"><i class="fa fa-arrow-left"></i></a></span></h5></span>
+  <span class='row'>
+    <span class="col-md-12 d-content">
+      <span class="portlet">
+        <form (ngSubmit)="onSubmit(f)" #f="ngForm">
+          <div class="form-group m-form__group row">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              Email
+            </label>
+            <div class="col-6">
+              <input class="form-control m-input m-input-large" type="text" [(ngModel)]="user.email" [email]="true" name='email' #name="ngModel" required placeholder="Email" id="title-text-input">
+            </div>
+          </div>
+          <div class="form-group m-form__group row">
+            <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+              First Name
+            </label>
+            <div class="col-6">
+              <input class="form-control m-input m-input-large" type="text" [(ngModel)]="user.firstName" name="firstName" required #name="ngModel" placeholder="First Name" id="codename-text-input">
+            </div>
+          </div>
+          <div class="form-group m-form__group row">
+              <label for="example-text-input" class="col-2 col-form-label offset-md-2">
+                Last Name
+              </label>
+              <div class="col-6">
+                <input class="form-control m-input m-input-large" type="text" [(ngModel)]="user.lastName" name="Last Name" required #name="ngModel" placeholder="Last Name" id="codename-text-input">
+              </div>
+            </div>
+          <div class="form-group m-form__group row">
+            <div class="col-md-3 offset-md-8">
+              <button type="button" class="btn btn-danger btn-upload btn-lg" [routerLink]="['/users']">Back</button>
+              <button class="btn btn-primary btn-upload btn-lg" multipart="" [disabled]="f.invalid">Submit</button> 
+            </div>
+          </div>
+        </form>
+      </span>
+    </span>
+  </span>
+</div>
