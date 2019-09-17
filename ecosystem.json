@@ -1,0 +1,31 @@
+{
+  "apps" : [{
+    "name"      : "qnapcollege",
+    "script"    : "dist/server.js",
+    "env": {
+      "COMMON_VARIABLE": "true"
+    },
+    "env_production" : {
+      "NODE_ENV": "production"
+    }
+  }],
+  "deploy" : {
+    "production" : {
+      "winkey": "/c/Users/nate/.ssh/google_cloud_deploy_openSSH",
+      "key": "~/.ssh/id_rsa_deploy_google_cloud",
+      "user" : "deploy",
+      "host" : ["blog.qnap.com"],
+      "ref"  : "origin/master",
+      "repo" : "git@github.com:qqnc/qnap-college-ng8.git",
+      "path" : "/var/www/qnapcollege",
+      "pre-setup": "sudo rm -rf /var/www/qnapcollege/source",
+      "post-setup": "npm install --unsafe-perm",
+      "pre-deploy-local" : "echo 'This is a local executed command'",
+      "pre-deploy" : "",
+      "post-deploy" : "cp ~/environment/college/.env ./; sudo pm2 startOrRestart ecosystem.config.js --env production; sudo chown -R deploy:deploy node_modules",
+      "env"  : {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

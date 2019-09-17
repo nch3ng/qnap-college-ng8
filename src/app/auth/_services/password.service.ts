@@ -1,11 +1,12 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class PasswordService {
   scorePassword = (pass): number => {
-    let score: number = 0;
-    if (!pass)
+    let score = 0;
+    if (!pass) {
       return score;
+    }
     // award every unique letter until 5 repetitions
     let letters = new Object();
     for (let i=0; i<pass.length; i++) {

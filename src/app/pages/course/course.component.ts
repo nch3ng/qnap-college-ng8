@@ -11,7 +11,6 @@ import { CourseService } from '../../_services/course.service';
 import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AddThisService } from '../../_services/addthis.service';
 import { MetaService } from '@ngx-meta/core';
-import { FacebookService, InitParams } from 'ngx-facebook';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../../environments/environment';
 import { ReCaptchaV3Service, InvisibleReCaptchaComponent } from 'ngx-captcha';
@@ -19,7 +18,7 @@ import { ConfirmService } from '../../_services/confirm.service';
 import { AddScriptService } from '../../_services/addscript.service';
 import { FavService } from '../../_services/favorite.service';
 
-declare var gapi: any;
+// declare let gapi: any;
 
 @Component({
   selector: 'app-course',
@@ -68,10 +67,10 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   commentLength = 0;
   // siteKey = '6LeVt3cUAAAAADO9qIyWsIHZOaiFUKr0PwWvVes9';
 
-  loading: boolean = false;
+  loading = false;
   GoogleAuth: any = null;
-  isGoogleSignedIn: boolean = false;
-  isAuthorized: boolean = false;
+  isGoogleSignedIn = false;
+  isAuthorized = false;
   currentApiRequest: any = {};
 
   constructor(
@@ -80,27 +79,16 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private _router: Router,
     private _addThis: AddThisService,
     private readonly _meta: MetaService,
-    private _fb: FacebookService,
     private _toastr: ToastrService,
     private _authService: AuthService,
     private _usersService: UsersService,
     private reCaptchaV3Service: ReCaptchaV3Service,
     private _CommentsService: CommentsService,
-    private _eventBroker: EventBrokerService, 
+    private _eventBroker: EventBrokerService,
     private _confirmService: ConfirmService,
     private _addScript: AddScriptService,
-    private _favService: FavService,
-    private _appRef: ApplicationRef,
-    private _cdRef:ChangeDetectorRef) {
+    private _favService: FavService) {
 
-    let initParams: InitParams = {
-      appId: '482418502252290',
-      xfbml: true,
-      version: 'v3.1'
-    };
-
-    this._fb.init(initParams);
-    
     this._courseService.all(4, 'watched').subscribe(
       (coursedoc: CourseDoc) => {
         this.courses = coursedoc.docs;
@@ -112,30 +100,30 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.keywords = '';
 
-    gapi.load('client:auth2', () => {
-      console.log('client:auth2 loaded');
+    // gapi.load('client:auth2', () => {
+    //   console.log('client:auth2 loaded');
 
-      gapi.auth2.init({
-        'clientId': environment.GoogleClientID,
-        // 'apiKey': environment.GoogleYoutubeAPIKey,
-        'scope': 'profile email',
-        'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
-      }).then((onInit) => {
-        console.log('auth2 initialized')
-        this.GoogleAuth = gapi.auth2.getAuthInstance();
-        this.isGoogleSignedIn = this.GoogleAuth.isSignedIn.get();
-        // Listen for sign-in state changes.
-        this.GoogleAuth.isSignedIn.listen(this.signinChanged.bind(this));
-        // Listen for changes to current user.
-        this.GoogleAuth.currentUser.listen(this.userChanged.bind(this));
+    //   gapi.auth2.init({
+    //     'clientId': environment.GoogleClientID,
+    //     // 'apiKey': environment.GoogleYoutubeAPIKey,
+    //     'scope': 'profile email',
+    //     'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
+    //   }).then((onInit) => {
+    //     console.log('auth2 initialized')
+    //     this.GoogleAuth = gapi.auth2.getAuthInstance();
+    //     this.isGoogleSignedIn = this.GoogleAuth.isSignedIn.get();
+    //     // Listen for sign-in state changes.
+    //     this.GoogleAuth.isSignedIn.listen(this.signinChanged.bind(this));
+    //     // Listen for changes to current user.
+    //     this.GoogleAuth.currentUser.listen(this.userChanged.bind(this));
 
-        // if (this.GoogleAuth.isSignedIn.get() == true) {
-        //   this.GoogleAuth.signIn();
-        // }
-      }, (onError) => {
-        console.error(onError);
-      });
-    });
+    //     // if (this.GoogleAuth.isSignedIn.get() == true) {
+    //     //   this.GoogleAuth.signIn();
+    //     // }
+    //   }, (onError) => {
+    //     console.error(onError);
+    //   });
+    // });
   }
 
   ngOnInit() {
@@ -206,8 +194,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
               }
             },
-           (httpErrorRes) => { 
-              
+           (httpErrorRes) => {
               // console.log(httpErrorRes.error)
               if (httpErrorRes.error.status === 401){
 
@@ -234,18 +221,6 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
           //     }
           //   })
           // }
-          // console.log(params);
-          // this._fb.ui(params)
-          //   .then((res: UIResponse) => 
-          //   {
-          //     console.log("dadedadeada");
-          //     console.log(res)
-          //   })
-          //   .catch((e: any) => 
-          //   {
-          //     console.log("dadeada");
-          //     console.error(e)
-          //   });;
         }
       });
 
@@ -487,7 +462,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       console.log('signed in')
     }
-    // gapi.load('client:auth2', () => {  
+    // gapi.load('client:auth2', () => {
     //   this.GoogleAuth = gapi.auth2.getAuthInstance();
     //   console.log('client:auth2 loaded');
     //   gapi.auth2.init({
@@ -500,7 +475,6 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     //     this.isSignedIn = this.GoogleAuth.isSignedIn.get();
 
     //     if (!this.isSignedIn) {
-          
     //       // this.GoogleAuth.signIn();
     //       this.GoogleAuth.signIn();
     //     }
@@ -530,49 +504,49 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     // });
   }
 
-  sendAuthorizedApiRequest(requestDetails) {
-    console.log('sendAuthorizedApiRequest')
-    this.currentApiRequest = requestDetails;
-    if (this.isAuthorized) {
-      // Make API request
-      // gapi.client.request(requestDetails)
-      gapi.client.init({
-        'clientId': environment.GoogleClientID,
-        'apiKey': environment.GoogleYoutubeAPIKey,
-        'scope': 'https://www.googleapis.com/auth/youtube.force-ssl',
-        'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
-      }).then(() => {
-        // console.log(gapi.auth2.getAuthInstance().signIn())
-        gapi.client.youtube.videos.rate({
-          "id": "J5yhBpsPSFU",
-          "rating": "like"
-        })
-            .then(function(response) {
-                    // Handle the results here (response.result has the parsed body).
-                    console.log("Response", response);
-                  },
-                  function(err) { console.error("Execute error", err); });
-      });
-      
-      // Reset currentApiRequest variable.
-      this.currentApiRequest = {};
-    } else {
-      this.GoogleAuth.signIn();
-    }
-  }
+  // sendAuthorizedApiRequest(requestDetails) {
+  //   // console.log('sendAuthorizedApiRequest')
+  //   this.currentApiRequest = requestDetails;
+  //   if (this.isAuthorized) {
+  //     // Make API request
+  //     // gapi.client.request(requestDetails)
+  //     gapi.client.init({
+  //       'clientId': environment.GoogleClientID,
+  //       'apiKey': environment.GoogleYoutubeAPIKey,
+  //       'scope': 'https://www.googleapis.com/auth/youtube.force-ssl',
+  //       'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
+  //     }).then(() => {
+  //       // console.log(gapi.auth2.getAuthInstance().signIn())
+  //       gapi.client.youtube.videos.rate({
+  //         "id": "J5yhBpsPSFU",
+  //         "rating": "like"
+  //       })
+  //           .then(function(response) {
+  //                   // Handle the results here (response.result has the parsed body).
+  //                   console.log("Response", response);
+  //                 },
+  //                 function(err) { console.error("Execute error", err); });
+  //     });
 
-  updateSigninStatus(isSignedIn) {
-    console.log('updateSigninStatus')
-    if (isSignedIn) {
-      console.log(this);
-      this.isAuthorized = true;
-      if (this.currentApiRequest) {
-        this.sendAuthorizedApiRequest(this.currentApiRequest);
-      }
-    } else {
-      this.isAuthorized = false;
-    }
-  }
+  //     // Reset currentApiRequest variable.
+  //     this.currentApiRequest = {};
+  //   } else {
+  //     this.GoogleAuth.signIn();
+  //   }
+  // }
+
+  // updateSigninStatus(isSignedIn) {
+  //   console.log('updateSigninStatus')
+  //   if (isSignedIn) {
+  //     console.log(this);
+  //     this.isAuthorized = true;
+  //     if (this.currentApiRequest) {
+  //       this.sendAuthorizedApiRequest(this.currentApiRequest);
+  //     }
+  //   } else {
+  //     this.isAuthorized = false;
+  //   }
+  // }
 
   /**
    * Listener method for sign-out live value.

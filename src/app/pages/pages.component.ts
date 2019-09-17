@@ -1,11 +1,11 @@
 import { NgForm } from '@angular/forms';
-import { AuthService } from './../auth/_services/auth.service';
-import { AddThisService } from './../_services/addthis.service';
+import { AuthService } from '../auth/_services/auth.service';
+import { AddThisService } from '../_services/addthis.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { NgxScreensizeService } from './../modules/ngx-screensize/_services/ngx-screensize.service';
-import { ModalService } from './../_services/modal.service';
+import { NgxScreensizeService } from '../modules/ngx-screensize/_services/ngx-screensize.service';
+import { ModalService } from '../_services/modal.service';
 import { Router, ActivatedRoute, RouteConfigLoadEnd, NavigationEnd, NavigationStart, NavigationCancel } from '@angular/router';
-import { IEventListener, EventBrokerService } from './../_services/event.broker.service';
+import { IEventListener, EventBrokerService } from '../_services/event.broker.service';
 import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SearchService } from '../_services/search.service';
@@ -98,7 +98,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.log(this.deviceInfo);
     const url = this.router.url;
     this.checkBanner(url);
-    this.returnUrl = this.route.snapshot['routerState'].url;
+    this.returnUrl =  this.route.snapshot['routerState'] && this.route.snapshot['routerState'].url;
 
     this._myEventListener = this.eventBroker.listen<boolean>('loading', (value: boolean) => {
       // Waiting loading event in router-outlet, it's a workaround, because we don't have broker on router-outlet

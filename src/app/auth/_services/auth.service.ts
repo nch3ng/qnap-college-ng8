@@ -6,7 +6,7 @@ import { AuthResponse, AuthResponseError } from './../../_models/authresponse';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-
+import { AuthService as SocialService } from 'angularx-social-login';
 import * as ResCode from '../../_codes/response';
 import { User } from '../_models/user.model';
 
@@ -16,7 +16,7 @@ export class AuthService {
   token: string;
   // tslint:disable-next-line: variable-name
   private _loggedIn;
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private socialService: SocialService) {
     this._loggedIn = false;
   }
 
@@ -152,6 +152,7 @@ export class AuthService {
     // remove user from local storage to log user out
     this.token = null;
     this._loggedIn = false;
+    this.socialService.signOut();
     localStorage.removeItem('currentUser');
   }
 

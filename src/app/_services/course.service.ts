@@ -30,7 +30,7 @@ export class CourseService {
   all(limit?: number, getBy?: string, page?: number): Observable<CourseDoc> {
     const apiQuery = this.constructParams(limit, getBy, page);
     const headers = new HttpHeaders().set('Cache-Control', 'no-cache');
-    console.log(apiQuery);
+    // console.log(apiQuery);
     return this.httpClient.get<CourseDoc>(apiQuery, {headers});
   }
 

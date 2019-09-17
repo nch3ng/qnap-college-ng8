@@ -3,7 +3,6 @@ import { TermsOfUseComponent } from './termsofuse/termsofuse.component';
 import { AddScriptService } from './../_services/addscript.service';
 import { ConfirmService } from './../_services/confirm.service';
 import { CommentsService } from './../_services/comment.service';
-import { FacebookService, FacebookModule } from 'ngx-facebook';
 import { CourseComponent } from './course/course.component';
 import { CategoryService } from './../_services/category.service';
 import { CategoryComponent } from './category/category.component';
@@ -47,8 +46,7 @@ import { SearchResolver } from './search/search.resolver';
     InfiniteScrollModule,
     NgxCaptchaModule,
     SecurityModule,
-    PipesModule,
-    FacebookModule
+    PipesModule
   ],
   declarations: [
     PagesComponent,
@@ -71,7 +69,6 @@ import { SearchResolver } from './search/search.resolver';
     AuthService,
     FavService,
     CategoryService,
-    FacebookService,
     UsersService,
     CommentsService,
     ConfirmService,

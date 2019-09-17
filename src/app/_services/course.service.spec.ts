@@ -1,6 +1,5 @@
-import { getCourses } from './../../test-data/get-data';
+import { COURSES } from './test-data';
 import { CourseDoc } from './../_models/document';
-import { COURSES } from './../../test-data/test-data';
 import { AuthService } from './../auth/_services/auth.service';
 import { CourseService } from './course.service';
 import { TestBed, } from '@angular/core/testing';

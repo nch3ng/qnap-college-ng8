@@ -1,7 +1,7 @@
 import { MetaService } from '@ngx-meta/core';
-import { Component, OnInit, AfterViewInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationEnd} from '@angular/router';
-
+import { isPlatformBrowser } from '@angular/common';
 import { NgxScreensizeService } from './modules/ngx-screensize/_services/ngx-screensize.service';
 
 
@@ -13,13 +13,17 @@ import { NgxScreensizeService } from './modules/ngx-screensize/_services/ngx-scr
 
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   loaded = false;
-  constructor(private _ssService: NgxScreensizeService, private router: Router, private readonly _meta: MetaService) {
+  constructor(
+    private ssService: NgxScreensizeService,
+    private router: Router,
+    private readonly meta: MetaService,
+    @Inject(PLATFORM_ID) private platformId: object) {
   }
   ngOnInit() {
   }
 
   ngAfterViewInit() {
-    this._meta.setTag('og:title', 'QNAP College');
+    this.meta.setTag('og:title', 'QNAP College');
     setTimeout(() => {
       this.loaded = true;
     }, 1000);
@@ -27,8 +31,10 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.events.subscribe(event => {
       // console.log('siwth page')
       if (event instanceof NavigationEnd) {
-        (<any>window).ga('set', 'page', event.urlAfterRedirects);
-        (<any>window).ga('send', 'pageview');
+        if (isPlatformBrowser(this.platformId)) {
+          (window as any).ga('set', 'page', event.urlAfterRedirects);
+          (window as any).ga('send', 'pageview');
+        }
       }
     });
   }

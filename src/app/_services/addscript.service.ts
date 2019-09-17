@@ -3,21 +3,23 @@ import { Observable ,  Subscriber } from 'rxjs';
 
 @Injectable()
 export class AddScriptService {
-  constructor(){}
+  constructor() {}
 
   checkForScript(scriptPath: string) {
-    let scriptOnPage: boolean = false;
+    let scriptOnPage = false;
     const selector = `script[src*="${scriptPath}"]`;
     const matches = document.querySelectorAll(selector);
-    if(matches.length > 0) {
+    if (matches.length > 0) {
         scriptOnPage = true;
     }
     return scriptOnPage;
   }
 
-  addScript(scriptPath: string, params?: Object) {
+  addScript(scriptPath: string, params?: object, onload?: any, force: boolean = false) {
+    // console.log(scriptPath);
     // if script is already on page, do nothing
-    if (this.checkForScript(scriptPath)) {
+    if (!force && this.checkForScript(scriptPath)) {
+      // console.log('existed');
       return;
     }
 
@@ -34,27 +36,26 @@ export class AddScriptService {
     }
 
     // console.log(scriptPath);
-    let script = document.createElement('script');
+    const script = document.createElement('script');
     script.src = scriptPath;
-
+    script.onload = onload;
     // append SCRIPT element
 
-    if(scriptInFooter !== true && typeof document.head === 'object') {
+    if (scriptInFooter !== true && typeof document.head === 'object') {
       document.head.appendChild(script);
     } else {
       document.body.appendChild(script);
     }
-  };
+  }
 
-  addMeta(params: Object) {
+  addMeta(params: object) {
     // console.log('add Meta')
     let meta = document.createElement('meta');
 
     for (let key in params) {
-      console.log(key);
+      // console.log(key);
       meta['key'] = params[key];
     }
     document.head.appendChild(meta);
   }
-
 }

@@ -1,5 +1,4 @@
 import { RouterModule } from '@angular/router';
-import { UsersService } from './_services/users.service';
 import { CommentsResolver } from './../admin/comments/comments.resolver';
 import { ConfirmationComponent } from './verification/confirmation';
 import { AuthGuard } from './_guards/auth.guard';
@@ -7,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthRoutingModule } from './auth-routing.module';
 
 import { AuthComponent } from './auth.component';
 import { VerificationComponent } from './verification/verification.component';
@@ -17,6 +15,24 @@ import { CreatePasswordComponent } from './create.password/create.password.compo
 import { ForgetPasswordComponent } from './forget.password.component/forget.password.comonent';
 import { PasswordService } from './_services/password.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angularx-social-login';
+import { FacebookLoginProvider } from 'angularx-social-login';
+import { environment } from 'src/environments/environment';
+
+const config = new AuthServiceConfig([
+  {
+    id: FacebookLoginProvider.PROVIDER_ID,
+    provider: new FacebookLoginProvider(environment.FBId)
+  },
+  {
+    id: GoogleLoginProvider.PROVIDER_ID,
+    provider: new GoogleLoginProvider(environment.GoogleClientID)
+  },
+]);
+
+export function provideConfig() {
+  return config;
+}
 
 @NgModule({
   imports: [
@@ -25,7 +41,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     NgxCaptchaModule,
     RouterModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    SocialLoginModule
   ],
   declarations: [
     AuthComponent,
@@ -39,7 +56,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   providers: [
     AuthGuard,
     PasswordService,
-    CommentsResolver
+    CommentsResolver,
+    {
+      provide: AuthServiceConfig,
+      useFactory: provideConfig
+    }
   ],
   entryComponents: [
     VerificationSuccessComponent,

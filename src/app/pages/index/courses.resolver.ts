@@ -33,8 +33,10 @@ export class CoursesResolver implements Resolve<CourseDoc> {
         break;
       }
     }
-
-    const currentUser = localStorage.getItem('currentUser');
+    let currentUser = null;
+    if (isPlatformBrowser(this.platformId)) {
+      currentUser = localStorage.getItem('currentUser');
+    }
 
     if (currentUser !== null && typeof cs_value === 'undefined') {
       // console.log('favorite')

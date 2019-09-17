@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://go.qnap.com/api/',
+  // apiUrl: 'https://go.qnap.com/api/',
+  apiUrl: 'http://localhost:3000/api/',
   recapctchaSitekey: '6LcDLo8UAAAAAJ20QODilOdHAsDj37Foey2nat_6',
   FBId: '482418502252290',
   GoogleClientID: '230327847455-6l12nf0ek6nhs0iui3iomk2mhtad3e59.apps.googleusercontent.com',

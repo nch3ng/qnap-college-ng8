@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  webapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ${PWD}:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 4200:4200
+    tty: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - TERM=xterm-256color`
