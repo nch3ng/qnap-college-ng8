@@ -4,7 +4,7 @@
     <header #header>
       <div class="container"> &nbsp;
         <div *ngIf="commentEnabled" class='pull-right log-btn'>
-            <span *ngIf="loggedIn">Hello, <a [routerLink]="['/profile']">{{this.currentUser.name}}</a> | <a (click)="onSignout($event);">Logout</a></span>
+            <span *ngIf="loggedIn">Hello, <a [routerLink]="['/admin/profile']">{{this.currentUser.name}}</a> | <a (click)="onSignout($event);">Logout</a></span>
             <a href="#" [routerLink]="['/login']" [queryParams]="{returnUrl: returnUrl}" *ngIf="!loggedIn">Login</a>
         </div>
       </div>

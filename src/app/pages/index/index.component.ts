@@ -201,15 +201,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.page += 1;
     let promise;
 
-    console.log(this.loggedIn)
-    console.log(this.cs)
-    if (this.loggedIn && this.cs === 'favorites'){
+    // console.log(this.loggedIn)
+    // console.log(this.cs)
+    if (this.loggedIn && this.cs === 'favorites') {
       promise = this._courseService.getFavoritedCourses(6, this.page);
     } else {
       if (this.cs === 'favorites') {
-        this.cs === 'publishedDate';
+        this.cs = 'publishedDate';
         this.changeDisplayTo({name: 'Latest', value: 'publishedDate'})
-        
       }
       promise = this._courseService.all(6, this.cs, this.page);
     }
