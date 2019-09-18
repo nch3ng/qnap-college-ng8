@@ -138,7 +138,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
         (user: User) => {
           // console.log(user);
           if (user.role.level === 1 && this.returnUrl === '/admin') {
-            this.returnUrl = '/profile';
+            this.returnUrl = '/admin/profile';
           }
           this.loading = false;
           this.router.navigate([this.returnUrl]);
@@ -213,7 +213,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
             this.router.navigate(['/user/create-password', res.uid], { queryParams: { token:  res.token, from: 'fb'} });
           } else {
             if (res.role.name === 'normal' && this.returnUrl == '/admin') {
-              this.returnUrl = '/profile';
+              this.returnUrl = '/admin/profile';
             }
             this.router.navigate([this.returnUrl]);
           }
@@ -261,7 +261,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
             // console.log('logged in');
             // console.log(this.returnUrl)
             if (res.role.name === 'normal' && this.returnUrl === '/admin') {
-              this.returnUrl = '/profile';
+              this.returnUrl = '/admin/profile';
             }
             // console.log('Navigate to', this.returnUrl);
             this._navigate([this.returnUrl]);

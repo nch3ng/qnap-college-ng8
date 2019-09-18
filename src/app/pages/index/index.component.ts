@@ -86,11 +86,11 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
           // console.log(this.displayOptions)
 
           this.currentUser = this._authService.getUser();
-          this.currentUserAbbvName = this.currentUser.name.split(" ").map((n)=>n[0]).join("")
+          this.currentUserAbbvName = this.currentUser.name.split(' ').map((n) => n[0]).join('');
 
           if (this.currentUser && this.currentUser.favorites !== []) {
             this.courses.forEach((item, index) => {
-              if (this.currentUser.favorites.indexOf(this.courses[index]._id) != -1) {
+              if (this.currentUser.favorites.indexOf(this.courses[index]._id) !== -1) {
                 this.courses[index].isFavorited = true;
               } else {
                 this.courses[index].isFavorited = false;
@@ -195,7 +195,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  onScroll () {
+  onScroll() {
     // console.log('scrolled!!');
     this.loadingmore = true;
     this.page += 1;
@@ -208,7 +208,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       if (this.cs === 'favorites') {
         this.cs = 'publishedDate';
-        this.changeDisplayTo({name: 'Latest', value: 'publishedDate'})
+        this.changeDisplayTo({name: 'Latest', value: 'publishedDate'});
       }
       promise = this._courseService.all(6, this.cs, this.page);
     }
