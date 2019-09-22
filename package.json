@@ -11,6 +11,8 @@
     "compile:server": "webpack --config webpack.server.config.js --progress --colors",
     "serve:ssr": "node dist/server",
     "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
+    "build:staging:ssr": "npm run build:staging:client-and-server-bundles && npm run compile:server",
+    "build:staging:client-and-server-bundles": "ng build --configuration=staging && ng run qnap-college-ng8:server:staging --bundleDependencies all",
     "build:client-and-server-bundles": "ng build --prod && ng run qnap-college-ng8:server:production --bundleDependencies all"
   },
   "private": true,

@@ -82,7 +82,7 @@ export class CourseService {
     const apiQuery = this.apiRoot + 'tag/'  + tag;
     if (orderBy) {
     }
-    const headers = new HttpHeaders().set('Cache-Control', 'no-cache');
+    const headers = new HttpHeaders().set('Cache-Control', 'no-cache')  ;
     return this.httpClient.get<Course []>(apiQuery, {headers});
   }
 

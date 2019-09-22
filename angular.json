@@ -61,6 +61,30 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },
@@ -72,6 +96,9 @@
           "configurations": {
             "production": {
               "browserTarget": "qnap-college-ng8:build:production"
+            },
+            "staging": {
+              "browserTarget": "qnap-college-ng8:build:staging"
             }
           }
         },
@@ -120,6 +147,9 @@
           "configurations": {
             "production": {
               "devServerTarget": "qnap-college-ng8:serve:production"
+            },
+            "staging": {
+              "devServerTarget": "qnap-college-ng8:serve:staging"
             }
           }
         },
@@ -136,6 +166,19 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": {
+                "scripts": false,
+                "styles": true
+              }
+            },
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
                 }
               ],
               "sourceMap": false,

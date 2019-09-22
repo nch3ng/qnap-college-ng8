@@ -1,7 +1,6 @@
 export const COURSES =
 [
   {
-    id: 1,
     watched: 6,
     rank: 0,
     like: 1,
@@ -23,7 +22,6 @@ export const COURSES =
     __v: 0
   },
   {
-    id: 2,
     watched: 16,
     rank: 0,
     like: 1,
@@ -45,7 +43,6 @@ export const COURSES =
     __v: 0
   },
   {
-    id: 3,
     watched: 229,
     rank: 0,
     like: 7,
@@ -67,7 +64,6 @@ export const COURSES =
     __v: 0
   },
   {
-    id: 4,
     watched: 209,
     rank: 0,
     like: 15,
@@ -89,7 +85,6 @@ export const COURSES =
     __v: 0
   },
   {
-    id: 5,
     watched: 565,
     rank: 0,
     like: 10,
@@ -112,7 +107,6 @@ export const COURSES =
     __v: 0
   },
   {
-    id: 6,
     watched: 306,
     rank: 0,
     like: 5,
@@ -134,7 +128,6 @@ export const COURSES =
     __v: 0
   },
   {
-    id: 7,
     watched: 307,
     rank: 0,
     like: 8,

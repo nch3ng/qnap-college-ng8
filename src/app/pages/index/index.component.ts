@@ -1,3 +1,4 @@
+import { MetaService } from '@ngx-meta/core';
 import { CourseDoc } from './../../_models/document';
 import { ModalService } from './../../_services/modal.service';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy, HostListener } from '@angular/core';
@@ -38,7 +39,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   loadingmore = false;
   totalPages = 0;
   finished = false;
-  loggedIn: boolean = false;
+  loggedIn = false;
   currentUser = null;
   currentUserAbbvName = 'JD';
 
@@ -52,14 +53,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   constructor(
-    private _categoryService: CategoryService,
-    private _favService: FavService,
-    private _route: ActivatedRoute,
-    private _modalService: ModalService,
-    private _ssService: NgxScreensizeService,
-    private _courseService: CourseService,
-    private _router: Router,
-    private _authService: AuthService) {
+    private categoryService: CategoryService,
+    private favService: FavService,
+    private route: ActivatedRoute,
+    private modalService: ModalService,
+    private ssService: NgxScreensizeService,
+    private courseService: CourseService,
+    private router: Router,
+    private authService: AuthService) {
     }
 
   ngOnInit() {
@@ -71,21 +72,21 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gridCol === 2 ? this.gridClass = 'col-md-5' : this.gridClass = 'col-md-4';
     this.menuOpen = false;
     this.menuOpenForStyle = false;
-    this.displayOptions = this._courseService.options;
+    this.displayOptions = this.courseService.options;
     this.loading = false;
     this.currentDisplay = localStorage.getItem('currentDisplay');
     if (this.currentDisplay) {
-      this.cs = this._courseService.optionsMapping[this.currentDisplay];
+      this.cs = this.courseService.optionsMapping[this.currentDisplay];
     }
 
-    this._authService.verify().subscribe(
+    this.authService.verify().subscribe(
       (res) => {
         if (res && res.success) {
           this.loggedIn = true;
           this.displayOptions.push({name: 'My Favorite', value: 'favorites'});
           // console.log(this.displayOptions)
 
-          this.currentUser = this._authService.getUser();
+          this.currentUser = this.authService.getUser();
           this.currentUserAbbvName = this.currentUser.name.split(' ').map((n) => n[0]).join('');
 
           if (this.currentUser && this.currentUser.favorites !== []) {
@@ -109,14 +110,14 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     );
 
-    this.sub = this._route.data.subscribe(
+    this.sub = this.route.data.subscribe(
       (data: Data) => {
         if (data.coursedoc) {
           // console.log(data.coursedoc);
           this.courses = data.coursedoc.docs;
           this.totalPages = data.coursedoc.pages;
           setTimeout( () => {
-            const screenClass = this._ssService.sizeClass();
+            const screenClass = this.ssService.sizeClass();
             if (screenClass === 'xs' || screenClass === 'sm') {
               this.cGridWidth = this.cElement.nativeElement.offsetWidth / 3;
             } else {
@@ -153,8 +154,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onModalPop(course: Course) {
-    this._courseService.quickClicked(course);
-    this._modalService.popModal(course.youtube_ref);
+    this.courseService.quickClicked(course);
+    this.modalService.popModal(course.youtube_ref);
   }
 
   toggleMenu() {
@@ -177,10 +178,10 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.toggleMenu();
     let promise;
 
-    if (this.loggedIn && option.value === 'favorites'){
-      promise = this._courseService.getFavoritedCourses(6, this.page);
+    if (this.loggedIn && option.value === 'favorites') {
+      promise = this.courseService.getFavoritedCourses(6, this.page);
     } else {
-      promise = this._courseService.all(6, option.value, this.page);
+      promise = this.courseService.all(6, option.value, this.page);
     }
     promise.subscribe(
       (coursedoc: CourseDoc) => {
@@ -204,23 +205,22 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.log(this.loggedIn)
     // console.log(this.cs)
     if (this.loggedIn && this.cs === 'favorites') {
-      promise = this._courseService.getFavoritedCourses(6, this.page);
+      promise = this.courseService.getFavoritedCourses(6, this.page);
     } else {
       if (this.cs === 'favorites') {
         this.cs = 'publishedDate';
         this.changeDisplayTo({name: 'Latest', value: 'publishedDate'});
       }
-      promise = this._courseService.all(6, this.cs, this.page);
+      promise = this.courseService.all(6, this.cs, this.page);
     }
     promise.subscribe(
       (newcoursedoc: CourseDoc) => {
         // console.log(newcoursedoc);
         for ( const doc of newcoursedoc.docs) {
-          if (this.currentUser && this.currentUser.favorites != []) {
-            if (this.currentUser.favorites.indexOf(doc._id) != -1) {
+          if (this.currentUser && this.currentUser.favorites !== []) {
+            if (this.currentUser.favorites.indexOf(doc._id) !== -1) {
               doc.isFavorited = true;
-            }
-            else {
+            } else {
               doc.isFavorited = false;
             }
           }
@@ -235,8 +235,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loadingmore = false;
       },
       (err) => {
-        this._router.navigate(['/maintenance']);
-      return [];
+        this.router.navigate(['/maintenance']);
+        return [];
       }
     );
   }
@@ -247,36 +247,37 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onToggleFavorite(e, cid: string) {
     e.stopPropagation();
-    if(!this.loggedIn) {
-      this._router.navigate(['/login'], { queryParams: { returnUrl: '/' }})
+    if (!this.loggedIn) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: '/' }});
       return;
     }
-    this._favService.toggleFav(cid).subscribe(
+    this.favService.toggleFav(cid).subscribe(
       (res) => {
+        // tslint:disable-next-line:no-string-literal
         if (res['success']) {
           this.courses.forEach((item, index) => {
             if (this.courses[index]._id === cid) {
               this.courses[index].isFavorited = !this.courses[index].isFavorited;
             }
-          })
-          this._favService.ToggleFavAndupdateInLocalStorage(cid);
+          });
+          this.favService.ToggleFavAndupdateInLocalStorage(cid);
         }
-      }, (error) =>{
+      }, (error) => {
       }
-    )
+    );
   }
   removeFavoriteOption() {
     this.displayOptions.forEach((option, index) => {
       if (this.displayOptions[index].value === 'favorites') {
-        this.displayOptions.splice(index,1);
+        this.displayOptions.splice(index, 1);
       }
     });
   }
 
-  runCheckFavorites(docs){
+  runCheckFavorites(docs) {
     for ( const doc of docs) {
-      if (this.currentUser && this.currentUser.favorites != []) {
-        if (this.currentUser.favorites.indexOf(doc._id) != -1) {
+      if (this.currentUser && this.currentUser.favorites !== []) {
+        if (this.currentUser.favorites.indexOf(doc._id) !== -1) {
           doc.isFavorited = true;
         } else {
           doc.isFavorited = false;

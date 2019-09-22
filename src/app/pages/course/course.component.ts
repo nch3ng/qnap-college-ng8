@@ -74,22 +74,22 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   currentApiRequest: any = {};
 
   constructor(
-    private _route: ActivatedRoute, 
-    private _courseService: CourseService, 
-    private _router: Router,
-    private _addThis: AddThisService,
-    private readonly _meta: MetaService,
-    private _toastr: ToastrService,
-    private _authService: AuthService,
-    private _usersService: UsersService,
+    private route: ActivatedRoute,
+    private courseService: CourseService, 
+    private router: Router,
+    private addThis: AddThisService,
+    private readonly meta: MetaService,
+    private toastr: ToastrService,
+    private authService: AuthService,
+    private usersService: UsersService,
     private reCaptchaV3Service: ReCaptchaV3Service,
-    private _CommentsService: CommentsService,
-    private _eventBroker: EventBrokerService,
-    private _confirmService: ConfirmService,
-    private _addScript: AddScriptService,
-    private _favService: FavService) {
+    private commentsService: CommentsService,
+    private eventBroker: EventBrokerService,
+    private confirmService: ConfirmService,
+    private addScript: AddScriptService,
+    private favService: FavService) {
 
-    this._courseService.all(4, 'watched').subscribe(
+    this.courseService.all(4, 'watched').subscribe(
       (coursedoc: CourseDoc) => {
         this.courses = coursedoc.docs;
       },
@@ -129,17 +129,17 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.commentEnabled = environment.comment_enable;
 
-    this._meta.setTitle('QNAP College - Get the Most out of Your QNAP NAS');
-    this._meta.setTag('og:image', '//img.youtube.com/vi/tcGIYGr4guA/sddefault.jpg');
-    this._meta.setTag('og:type', 'video.other');
-    this._meta.setTag('og:description', 'Course description');
-    this._meta.setTag('og:url', 'https://college.qnap.com/course/5b5105d1e449ca649bbc1675');
+    this.meta.setTitle('QNAP College - Get the Most out of Your QNAP NAS');
+    this.meta.setTag('og:image', '//img.youtube.com/vi/tcGIYGr4guA/sddefault.jpg');
+    this.meta.setTag('og:type', 'video.other');
+    this.meta.setTag('og:description', 'Course description');
+    this.meta.setTag('og:url', 'https://college.qnap.com/course/5b5105d1e449ca649bbc1675');
 
-    this._authService.verify().subscribe(
+    this.authService.verify().subscribe(
       (res) => {
         if (res && res.success) {
           this.loggedIn = true;
-          this.currentUser = this._authService.getUser();
+          this.currentUser = this.authService.getUser();
           // console.log(this.currentUser);
           this.currentUserAbbvName = this.currentUser.name.split(" ").map((n)=>n[0]).join("")
         }
@@ -149,25 +149,25 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     );
 
-    this.sub = this._route.params.subscribe(params => {
+    this.sub = this.route.params.subscribe(params => {
     });
 
-    this.routeSub = this._route.data.subscribe(
+    this.routeSub = this.route.data.subscribe(
       (data: Data) => {
         if (data.course) {
           this.course = data.course;
-          this._courseService.quickClicked(this.course);
+          this.courseService.quickClicked(this.course);
           this.youtubeSrc = 'https://www.youtube.com/embed/' + this.course.youtube_ref;
           this.course.tags = this.course.keywords.split(',');
           // console.log(this.course);
 
-          this._courseService.allCommentsByCourseId(this.course._id).subscribe(
+          this.courseService.allCommentsByCourseId(this.course._id).subscribe(
             (comments) => {
               this.comments = comments;
               let i = 0;
-              for (let comment of this.comments) {
-                let idx = i;
-                this._usersService.getAbbv(comment['owner_id']).subscribe(
+              for (const comment of this.comments) {
+                const idx = i;
+                this.usersService.getAbbv(comment['owner_id']).subscribe(
                   (res) => {
                     this.comments[idx]['poster_name'] = res['name'];
                     // console.log(idx);
@@ -181,30 +181,31 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
               }
             },
             (error) => {
-              this._toastr.error('Couldn\'t get comments')
+              this.toastr.error('Couldn\'t get comments');
             }
           );
 
-          this._favService.isFav(data.course._id).subscribe(
+          this.favService.isFav(data.course._id).subscribe(
             (res) => {
               console.log(res);
               if (res) {
-                if (res["payload"]["favorite"] === true){
+                // tslint:disable-next-line:no-string-literal
+                if (res['payload']['favorite'] === true) {
                   this.favorited = true;
                 }
               }
             },
            (httpErrorRes) => {
               // console.log(httpErrorRes.error)
-              if (httpErrorRes.error.status === 401){
+              if (httpErrorRes.error.status === 401) {
 
               } else {
-                this._toastr.error('Some errors.');
+                this.toastr.error('Some errors.');
               }
             }
-          )
-          // this._meta.setTitle(`${this.course.title}`);
-          // this._meta.setTag('og:image', `//img.youtube.com/vi/${this.course.youtube_ref}/sddefault.jpg`);
+          );
+          // this.meta.setTitle(`${this.course.title}`);
+          // this.meta.setTag('og:image', `//img.youtube.com/vi/${this.course.youtube_ref}/sddefault.jpg`);
           // let params: UIParams = {
           //   method: 'share_open_graph',
           //   action_type: 'og.shares',
@@ -224,28 +225,29 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       });
 
-    this.returnUrl = this._route.snapshot['_routerState'].url;
+    // tslint:disable-next-line:no-string-literal
+    this.returnUrl = this.route.snapshot['routerState'].url;
   }
 
   ngAfterViewInit() {
     const sitekey = environment.recapctchaSitekey;
-    this._addScript.addScript('https://www.google.com/recaptcha/api.js', { render: sitekey });
+    this.addScript.addScript('https://www.google.com/recaptcha/api.js', { render: sitekey });
     window.scrollTo(0, 0);
-    this.addThisSub = this._addThis.initAddThis('ra-5a0dd7aa711366bd', false).subscribe();
+    this.addThisSub = this.addThis.initAddThis('ra-5a0dd7aa711366bd', false).subscribe();
 
     // debugger
-    this._meta.setTag('og:title', 'This is course of ' + this.course.title);
+    this.meta.setTag('og:title', 'This is course of ' + this.course.title);
   }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
     this.routeSub.unsubscribe();
     this.addThisSub.unsubscribe();
-    this._meta.removeTag('property="og:type"');
+    this.meta.removeTag('property="og:type"');
   }
 
   onSubmit(f: NgForm) {
-    this._router.navigate(['/search', f.value.keywords]);
+    this.router.navigate(['/search', f.value.keywords]);
   }
 
   checkForScript() {
@@ -264,16 +266,17 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.setloading(true);
     this.loggedIn = false;
     localStorage.removeItem('currentUser');
-    const url = this._route.snapshot['_routerState'].url;
+    // tslint:disable-next-line:no-string-literal
+    const url = this.route.snapshot['routerState'].url;
     setTimeout(() => {
       this.setloading(false);
-      this._router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
-      this._router.navigate([url]));
-    }, 500)
-    // this._authService.logout();
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+      this.router.navigate([url]));
+    }, 500);
+    // this.authService.logout();
   }
 
-  addScript() {
+  addThisScript() {
     // if script is already on page, do nothing
     if (this.checkForScript()) {
       return;
@@ -282,9 +285,9 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     const profileId = 'ra-5a0dd7aa711366bd';
     const baseUrl = '//s7.addthis.com/js/300/addthis_widget.js';
     const scriptInFooter = true;
-    var url;
+    let url;
 
-    if(profileId) {
+    if (profileId) {
         // preference the site's profile ID in the URL, if available
         url = baseUrl + '#pubid=' + profileId;
     } else {
@@ -292,7 +295,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // create SCRIPT element
-    let script = document.createElement('script');
+    const script = document.createElement('script');
     script.src = url;
 
     // append SCRIPT element
@@ -302,24 +305,23 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       document.body.appendChild(script);
     }
-  };
+  }
 
   setloading(value: boolean) {
-    this._eventBroker.emit<boolean>("loading", value);
+    this.eventBroker.emit<boolean>('loading', value);
   }
 
   onEnterComment(e) {
-    
     // console.log(e.keyCode);
-    let comment_html = e.target.value;
-    comment_html = comment_html.replace(/\r?\n/g, '<br />');
+    let commentHtml = e.target.value;
+    commentHtml = commentHtml.replace(/\r?\n/g, '<br />');
     // console.log(this.comment);
     this.setloading(true);
     this.reCaptchaV3Service.execute(this.siteKey, 'postcomment', (token) => {
       // console.log('This is your token: ', token);
-      this.recaptchaToken = token
+      this.recaptchaToken = token;
 
-      if(e.target.value.length < 32) {
+      if (e.target.value.length < 32) {
         this.commentErrorMessage = 'The comment must be longer than 32 characters.';
         this.commentError = true;
         this.setloading(false);
@@ -332,22 +334,23 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         this.commentError = false;
       }
-      this._CommentsService.post(this.course._id, comment_html, this.recaptchaToken).subscribe(
+      this.commentsService.post(this.course._id, commentHtml, this.recaptchaToken).subscribe(
         (res) => {
-          
           // console.log(res);
           this.comment = '';
           this.commentLength = e.target.value.length + 1;
 
-          this._courseService.allCommentsByCourseId(this.course._id).subscribe(
+          this.courseService.allCommentsByCourseId(this.course._id).subscribe(
             (comments) => {
               this.comments = comments;
               let i = 0;
-              for (let comment of this.comments) {
-                let idx = i;
-                this._usersService.getAbbv(comment['owner_id']).subscribe(
-                  (res) => {
-                    this.comments[idx]['poster_name'] = res['name'];
+              for (const comment of this.comments) {
+                const idx = i;
+                // tslint:disable-next-line:no-string-literal
+                this.usersService.getAbbv(comment['owner_id']).subscribe(
+                  (cres) => {
+                    // tslint:disable-next-line:no-string-literal
+                    this.comments[idx]['poster_name'] = cres['name'];
                     // console.log(idx);
                     // console.log(this.comments);
                   },
@@ -359,14 +362,14 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
               }
             },
             (error) => {
-              this._toastr.error('Couldn\'t get comments')
+              this.toastr.error('Couldn\'t get comments')
             });
           this.setloading(false);
         },
         (err) => {
-          console.log(err);
+          // console.log(err);
           this.comment = '';
-          this.commentLength = e.target.value.length+1;
+          this.commentLength = e.target.value.length + 1;
           this.setloading(false);
         }
       );
@@ -376,9 +379,9 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onCommentCheckBlur(e) {
-    this.commentLength = e.target.value.length+1;
+    this.commentLength = e.target.value.length + 1;
 
-    if(e.target.value.length < 32 && e.target.value.length > 0) {
+    if (e.target.value.length < 32 && e.target.value.length > 0) {
       this.commentErrorMessage = 'The comment must be longer than 32 characters.';
       this.commentError = true;
     } else if (e.target.value.length > 512) {
@@ -390,10 +393,10 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onCommentCheckChange(e) {
-    this.commentLength = e.target.value.length+1;
+    this.commentLength = e.target.value.length + 1;
 
-    if(this.commentError) {
-      if(e.target.value.length >= 32 || e.target.value.length === 0 || e.target.value.length <= 512) {
+    if (this.commentError) {
+      if (e.target.value.length >= 32 || e.target.value.length === 0 || e.target.value.length <= 512) {
         this.commentError = false;
       }
     }
@@ -403,14 +406,14 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
   onDelete(commentId) {
-    this._confirmService.open("Do you want to delete the comment?").then(
+    this.confirmService.open('Do you want to delete the comment?').then(
       () => {
         this.setloading(true);
         setTimeout(() => {
-          this._CommentsService.delete(commentId).subscribe(
-            (res) => { 
+          this.commentsService.delete(commentId).subscribe(
+            (res) => {
               if (res && res.success) {
-                for (let i = 0; i < this.comments.length; i = i+1) {
+                for (let i = 0; i < this.comments.length; i = i + 1) {
                   if (commentId === this.comments[i]._id) {
                     const coms = this.comments.slice();
                     coms.splice(i, 1);
@@ -418,19 +421,19 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
                   }
                 }
                 this.setloading(false);
-                this._toastr.success('Successfully deleted the comment');
+                this.toastr.success('Successfully deleted the comment');
               } else {
                 this.setloading(false);
-                this._toastr.success('Nothing happened');
+                this.toastr.success('Nothing happened');
               }
             },
             (err) => {
               this.loading = false;
-              this._toastr.error('Something went wrong.')
+              this.toastr.error('Something went wrong.');
             }
-          ); 
-        }, 1000)  
-    }).catch(()=>{})
+          );
+        }, 1000);
+    }).catch(() => {});
   }
 
   execute(): void {
@@ -456,11 +459,11 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onThumbup(): void {
-    console.log(this.GoogleAuth)
+    // console.log(this.GoogleAuth);
     if (!this.isGoogleSignedIn) {
-      console.log('not siged in')
+      console.log('not siged in');
     } else {
-      console.log('signed in')
+      console.log('signed in');
     }
     // gapi.load('client:auth2', () => {
     //   this.GoogleAuth = gapi.auth2.getAuthInstance();
@@ -551,35 +554,36 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Listener method for sign-out live value.
    *
-   * @param {boolean} val the updated signed out state.
+   * @param boolean val the updated signed out state.
    */
   signinChanged = (val) => {
     console.log('Signin state changed to ', val);
-  };
-
+  }
 
   /**
    * Listener method for when the user changes.
    *
-   * @param {GoogleUser} user the updated user.
+   * @param GoogleUser user the updated user.
    */
   userChanged = (user) => {
     console.log('User now: ', user);
     this.currentGUser = user;
-  };
+  }
+
   toggleFav(): void {
-    if(!this.loggedIn) {
-      this._router.navigate(['/login'], { queryParams: { returnUrl: this.returnUrl }})
+    if (!this.loggedIn) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.returnUrl }});
       return;
     }
-    this._favService.toggleFav(this.course._id).subscribe(
+    this.favService.toggleFav(this.course._id).subscribe(
       (res) => {
+        // tslint:disable-next-line:no-string-literal
         if (res['success']) {
           this.favorited = !this.favorited;
-          this._favService.ToggleFavAndupdateInLocalStorage(this.course._id);
+          this.favService.ToggleFavAndupdateInLocalStorage(this.course._id);
         }
-      }, (error) =>{
+      }, (error) => {
       }
-    )
+    );
   }
-};
+}

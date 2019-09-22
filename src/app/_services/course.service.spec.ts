@@ -1,9 +1,11 @@
+import { Course } from './../../../../goqnap/server/models/course.model';
 import { COURSES } from './test-data';
 import { CourseDoc } from './../_models/document';
 import { AuthService } from './../auth/_services/auth.service';
 import { CourseService } from './course.service';
 import { TestBed, } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpResponse } from '@angular/common/http';
 
 describe('CourseService', async () => {
   let coursesService: CourseService;
@@ -35,13 +37,14 @@ describe('CourseService', async () => {
     coursesService.all().subscribe((courses: CourseDoc) => {
       expect(courses).toBeTruthy();
       expect(courses.docs).toBeTruthy();
-      expect(courses.docs.length).toBe(6);
+      // tslint:disable-next-line:no-string-literal
+      expect(courses.docs.length).toBe(COURSES.length);
       // console.log(courses);
     });
 
     const req = httpTestingController.expectOne('http://localhost:3000/api/courses?orderBy=publishedDate:desc&page=1');
     expect(req.request.method).toBe('GET');
-    req.flush({docs: COURSES.slice(0, 6)});
+    req.flush({docs: COURSES.slice()});
   });
 
   it('should get all courses', () => {
@@ -63,18 +66,56 @@ describe('CourseService', async () => {
   });
 
   it('should get a course by id', () => {
-    pending();
+    const course = COURSES[10];
+    coursesService.get(course._id).subscribe(c => {
+      expect(c).toBeTruthy();
+      expect(c._id).toBe(course._id);
+      expect(c.title).toBe(course.title);
+    });
+
+    const req = httpTestingController.expectOne(`http://localhost:3000/api/courses/${course._id}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(course);
+    // req.event(new HttpResponse<Course>({body: course[10]}));
   });
 
   it('should get courses by category', () => {
-    pending();
+
+    const courses = COURSES.filter( (c) => c.category === 'webinar');
+    coursesService.allByCategory('webinar').subscribe((cs) => {
+      expect(cs).toBeTruthy();
+      expect(cs.length).toBe(courses.length);
+      expect(cs[0]._id).toBe(courses[0]._id);
+    });
+    const req = httpTestingController.expectOne(`http://localhost:3000/api/category/webinar/courses`);
+    expect(req.request.method).toBe('GET');
+    req.flush(courses);
+
   });
 
   it('should get courses by tag', () => {
-    pending();
+    const courses = COURSES.filter( (c) => {
+      const keywords = c.keywords.toLowerCase().split(',');
+      if (keywords.includes('backup')) {
+        return true;
+      // tslint:disable-next-line:curly
+      } else return false;
+    });
+    coursesService.allByTag('backup').subscribe((cs) => {
+      expect(cs).toBeTruthy();
+      expect(cs.length).toBe(courses.length);
+      expect(cs[0]._id).toBe(courses[0]._id);
+    });
+
+    const req = httpTestingController.expectOne(`http://localhost:3000/api/tag/backup`);
+    expect(req.request.method).toBe('GET');
+    req.flush(courses);
   });
 
   it('should get all comments by course ID', () => {
+    const course = COURSES.filter((c) => c._id === '5cf6aa0f7b38191f6ee39e2e')[0];
+    const comments = course.comments;
+    console.log(comments);
     pending();
   });
 
