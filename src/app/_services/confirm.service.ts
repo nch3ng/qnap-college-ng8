@@ -11,7 +11,7 @@ import { DialogRef } from 'ngx-modialog';
 @Injectable()
 export class ConfirmService {
 
-  private preset: TwoButtonPreset = <any>{
+  private preset: TwoButtonPreset = {
     size: '',
     isBlocking: true,
     showClose: true,
@@ -26,16 +26,17 @@ export class ConfirmService {
     okBtnClass: '',
     cancelBtn: 'No',
     cancelBtnClass: 'btn btn-danger'
-  };
+  } as any;
 
   constructor(
     private ngxModal: NgxModal) {
-    bootstrap4Mode();
+    // bootstrap4Mode();
 
   }
 
-  open(...args: any[]): Promise<Boolean> {
-    const fluent: TwoButtonPresetBuilder = <any>this.ngxModal['confirm']();
+  open(...args: any[]): Promise<boolean> {
+    // tslint:disable-next-line:no-string-literal
+    const fluent: TwoButtonPresetBuilder = this.ngxModal['confirm']() as any;
     let strContent = 'Do you want to proceed?';
     if (args.length > 0) {
       // console.log(args[0]);
@@ -71,7 +72,8 @@ export class ConfirmService {
   }
 
   alert(msg) {
-    const fluent: OneButtonPresetBuilder = <any>this.ngxModal['alert']();
+    // tslint:disable-next-line:no-string-literal
+    const fluent: OneButtonPresetBuilder = this.ngxModal['alert']() as any;
 
     // for (let key in this.preset) {
     //   let value = this.preset[key];

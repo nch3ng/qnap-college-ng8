@@ -13,15 +13,15 @@ export class CommentsService {
 
   constructor(
     private httpClient: HttpClient,
-    private _authService: AuthService) {}
+    private authService: AuthService) {}
 
   post(courseId: string, comment: string, recaptchaToken?: string): Observable<any> {
     const body = JSON.stringify({
       course_id: courseId,
-      comment: comment,
-      recaptchaToken: recaptchaToken
-    })
-    return this.httpClient.post<any>(this.apiRoot + 'comment', body, this._authService.jwtHttpClient())
+      comment,
+      recaptchaToken
+    });
+    return this.httpClient.post<any>(this.apiRoot + 'comment', body, this.authService.jwtHttpClient())
       .pipe(
         catchError((err) => {
           return throwError(err);
@@ -30,7 +30,7 @@ export class CommentsService {
   }
 
   delete(commentId: string): Observable<any> {
-    return this.httpClient.delete<any>(this.apiRoot + 'comment/' + commentId, this._authService.jwtHttpClient())
+    return this.httpClient.delete<any>(this.apiRoot + 'comment/' + commentId, this.authService.jwtHttpClient())
       .pipe(
         catchError((err) => {
           return throwError(err);
@@ -39,16 +39,16 @@ export class CommentsService {
   }
 
   getCommentsByUserId(uid: string, limit?: number, page?: number): Observable<any> {
-    let api_query = this.apiRoot + 'comments/user/' + uid + '?';
+    let apiQuery = this.apiRoot + 'comments/user/' + uid + '?';
     if (limit) {
-      api_query = api_query + '&limit=' + limit;
+      apiQuery = apiQuery + '&limit=' + limit;
     }
     if (page) {
-      api_query += '&page=' + page;
+      apiQuery += '&page=' + page;
     } else {
-      api_query += '&page=1';
+      apiQuery += '&page=1';
     }
-    return this.httpClient.get<any>(api_query, this._authService.jwtHttpClient())
+    return this.httpClient.get<any>(apiQuery, this.authService.jwtHttpClient())
       .pipe(
         catchError((err) => {
           return throwError(err);
@@ -57,17 +57,17 @@ export class CommentsService {
   }
 
   getCountOfCommentsByUserId(uid: string): Observable<any> {
-    let api_query = this.apiRoot + 'comments/user/' + uid + '/count';
-    return this.httpClient.get<any>(api_query, this._authService.jwtHttpClient())
+    const apiQuery = this.apiRoot + 'comments/user/' + uid + '/count';
+    return this.httpClient.get<any>(apiQuery, this.authService.jwtHttpClient())
       .pipe(
         catchError((err) => {
           return throwError(err);
         })
       );
   }
-  searchCommentsOnUser(uid:string, query: string) {
-    let api_query = this.apiRoot + 'comments/user/' + uid + '/search?query=' + query;
-    return this.httpClient.get<any>(api_query, this._authService.jwtHttpClient())
+  searchCommentsOnUser(uid: string, query: string) {
+    const apiQuery = this.apiRoot + 'comments/user/' + uid + '/search?query=' + query;
+    return this.httpClient.get<any>(apiQuery, this.authService.jwtHttpClient())
       .pipe(
         catchError((err) => {
           return throwError(err);

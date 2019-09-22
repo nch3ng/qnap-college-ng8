@@ -1372,4 +1372,4 @@ export const COURSES =
       title: 'Get the Most From your Mac with a QNAP Turbo NAS',
       __v: 0
   }
-]
+];

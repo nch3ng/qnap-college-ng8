@@ -7,22 +7,19 @@ export class SecurityDirective implements OnInit {
 
   @Input('appSecurity')
   roles: string [];
-
-  constructor(private el: ElementRef, private _renderer: Renderer2) { 
+  // tslint:disable-next-line: variable-name
+  constructor(private el: ElementRef, private _renderer: Renderer2) {
   }
 
-  ngOnInit(){
-    // console.log(this.el);
-    // console.log(this.roles);
+  ngOnInit() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     // console.log(currentUser);
 
     if (currentUser && this.roles.includes(currentUser.role.name)) {
 
-    }
-    else {
+    } else {
       const parentNode = this.el.nativeElement.parentNode;
-      this.el.nativeElement.remove()
+      this.el.nativeElement.remove();
     }
   }
 }

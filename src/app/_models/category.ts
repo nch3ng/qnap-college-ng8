@@ -1,6 +1,8 @@
 export class Category {
-  _id: String;
-  name: String;
-  level: Number;
-  img_path: String;
+  // tslint:disable-next-line: variable-name
+  _id: string;
+  name: string;
+  level: number;
+  // tslint:disable-next-line:variable-name
+  img_path: string;
 }

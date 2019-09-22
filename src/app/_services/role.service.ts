@@ -11,23 +11,22 @@ export class RoleService {
 
   apiRoot: string = environment.apiUrl;
 
-  constructor(private httpClient: HttpClient, private _authService: AuthService) {}
+  constructor(private httpClient: HttpClient, private authService: AuthService) {}
 
   all(): Observable<Role []> {
-    return this.httpClient.get<Role []>(this.apiRoot + 'roles', this._authService.jwtHttpClient())
+    return this.httpClient.get<Role []>(this.apiRoot + 'roles', this.authService.jwtHttpClient())
       .pipe(
         catchError(this.handleError('getRoles', []))
       );
   }
 
- 
   /**
    * Handle Http operation that failed.
    * Let the app continue.
    * @param operation - name of the operation that failed
    * @param result - optional value to return as the observable result
    */
-  private handleError<T> (operation = 'operation', result?: T) {
+  private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead

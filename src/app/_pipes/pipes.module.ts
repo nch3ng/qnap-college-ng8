@@ -1,5 +1,5 @@
 import { DurationToTimePipe } from './moment.duration.pipe';
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 
 @NgModule({
   declarations: [
