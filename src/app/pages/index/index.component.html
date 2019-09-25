@@ -11,7 +11,7 @@
           <div class="row">
             <div class="col-md-2 col-xs-3 col-sm-3" *ngFor="let category of categories; let i = index;" [ngClass]="{ 'offset-md-1': i===0}">
               <a [routerLink]="['/category/', category.name]">
-                <span class='category-item' #cElement [ngStyle]="{'height': cGridWidth+'px', 'line-height': cGridWidth+'px'}">
+                <span class='category-item {{category.name}}'#cElement [ngStyle]="{'height': cGridWidth+'px', 'line-height': cGridWidth+'px'}">
                   {{category.name | ucfirst}}
                 </span>
               </a>

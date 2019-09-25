@@ -13,7 +13,9 @@
     "build:ssr": "npm run build:client-and-server-bundles && npm run compile:server",
     "build:staging:ssr": "npm run build:staging:client-and-server-bundles && npm run compile:server",
     "build:staging:client-and-server-bundles": "ng build --configuration=staging && ng run qnap-college-ng8:server:staging --bundleDependencies all",
-    "build:client-and-server-bundles": "ng build --prod && ng run qnap-college-ng8:server:production --bundleDependencies all"
+    "build:client-and-server-bundles": "ng build --prod && ng run qnap-college-ng8:server:production --bundleDependencies all",
+    "cypress:open": "./node_modules/.bin/cypress open",
+    "cypress:run": "./node_modules/.bin/cypress run"
   },
   "private": true,
   "dependencies": {
@@ -73,6 +75,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
+    "cypress": "^3.4.1",
     "fs": "0.0.1-security",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
@@ -82,7 +85,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
     "protractor": "~5.4.0",
-    "ts-loader": "^5.2.0",
+    "ts-loader": "^5.4.5",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
     "typescript": "~3.4.3",

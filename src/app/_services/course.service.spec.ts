@@ -6,11 +6,14 @@ import { CourseService } from './course.service';
 import { TestBed, } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpResponse } from '@angular/common/http';
+import { of } from 'rxjs';
 
 describe('CourseService', async () => {
   let coursesService: CourseService;
   let httpTestingController: HttpTestingController;
   let authServiceSpy: any;
+
+  let authService: any;
   beforeEach(() => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['fbLogin']);
 
@@ -26,6 +29,7 @@ describe('CourseService', async () => {
 
     httpTestingController = TestBed.get(HttpTestingController);
     coursesService = TestBed.get(CourseService);
+    authService = TestBed.get(AuthService);
   });
 
   afterEach(() => {
@@ -140,6 +144,7 @@ describe('CourseService', async () => {
   });
 
   it('should not add a course if not logged in', () => {
+    authService.jwtHttpClient.and.returnValue(of({'x-access-token': 'abcde'}));
     pending();
   });
 
