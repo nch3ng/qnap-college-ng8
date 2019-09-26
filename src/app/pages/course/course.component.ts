@@ -190,7 +190,11 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
               console.log(res);
               if (res) {
                 // tslint:disable-next-line:no-string-literal
-                if (res['payload']['favorite'] === true) {
+                if (res['payload'] &&
+                    // tslint:disable-next-line:no-string-literal
+                    res['payload']['favorite'] &&
+                    // tslint:disable-next-line:no-string-literal
+                    res['payload']['favorite'] === true) {
                   this.favorited = true;
                 }
               }
@@ -226,7 +230,10 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     // tslint:disable-next-line:no-string-literal
-    this.returnUrl = this.route.snapshot['routerState'].url;
+    if (this.route.snapshot['routerState']) {
+      // tslint:disable-next-line:no-string-literal
+      this.returnUrl = this.route.snapshot['routerState'].url;
+    }
   }
 
   ngAfterViewInit() {

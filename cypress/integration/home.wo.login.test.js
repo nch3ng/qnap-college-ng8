@@ -25,7 +25,6 @@ context('Home without login', () => {
   it('visits home with 6 videos and 5 categories in defaults', () => {
     
     cy.contains('Welcome to QNAP College');
-
     cy.get('.video-item').should('have.length', 6);
     cy.get('.category-item').should('have.length', 5);
   });
