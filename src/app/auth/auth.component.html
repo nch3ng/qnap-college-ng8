@@ -51,13 +51,13 @@
 					<!-- <div  ></div> -->
 				</div>
 				<div class="option-line policy">
-					By clicking Sign Up, you agree to our <a [routerLink]="['/termsofuse']" target='_blank'>Terms</a>, <a href="https://www.qnap.com/en/privacy-notice/qnap" target="_blank">Data Policy</a> and <a href="https://www.qnap.com/en/privacy-notice/qnap" target="_blank">Cookies Policy</a>. 
+					By clicking Sign Up, you agree to our <a id="terms" [routerLink]="['/termsofuse']" target='_blank'>Terms</a>, <a href="https://www.qnap.com/en/privacy-notice/qnap" target="_blank" id="policy">Data Policy</a> and <a href="https://www.qnap.com/en/privacy-notice/qnap" target="_blank" id="cookie_policy">Cookies Policy</a>. 
 				</div>
 				<div class='option-line'>
-					Don't have an account? <a [routerLink]="['/signup']"> Sign up</a>
+					Don't have an account? <a [routerLink]="['/signup']" class='signup'> Sign up</a>
 				</div>
 				<div class='option-line'>
-					<a [routerLink]="['/forget-password']" [queryParams]="{seed : seed}">Forget your password?</a>
+					<a [routerLink]="['/forget-password']" [queryParams]="{seed : seed}" class='forget-password'>Forget your password?</a>
 				</div>
 			</form>
 			<form class="form register-form" (ngSubmit)="onSignup(regf)" *ngIf="!signin" #regf='ngForm'>

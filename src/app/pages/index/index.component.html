@@ -32,7 +32,7 @@
             <div class="arrow gone"></div>
           </div>
           <div class="dropdown" [ngClass]="{'down': menuOpen}" [ngStyle]="{ 'overflow': menuOpenForStyle?'visible':'hidden'}">
-            <p *ngFor='let option of displayOptions' (click)="changeDisplayTo(option)">{{option.name}}</p>
+            <p *ngFor='let option of displayOptions' class="{{option.class}}" (click)="changeDisplayTo(option)">{{option.name}}</p>
           </div>
         </div>
         <!-- <span class="fa fa-bars"></span> -->
@@ -88,7 +88,7 @@
                   <div class="thumb-stats pull-right">
                     <span>{{course.duration | momentDuration}}</span>
                   </div>
-                  <div class="thumb-stats pull-right star" (click)="onToggleFavorite($event, course._id);">
+                  <div class="thumb-stats pull-right star add-favorite" (click)="onToggleFavorite($event, course._id);">
                     <i [ngClass]="{'far': !course.isFavorited, 'fas': course.isFavorited}" class=" fa-star"></i>
                     <!-- <span>{{course.like}}</span> -->
                   </div>

@@ -126,7 +126,9 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
   onSignin(f: NgForm) {
     this.signing = true;
     this.loading = true;
+    console.log('on sign in')
     this.reCaptchaV3Service.execute(this.siteKey, 'login', (token) => {
+      console.log('recaptch');
       if (!token) {
         this.toastr.error('Something went wrong');
         this.loading = false;

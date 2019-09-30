@@ -14,9 +14,9 @@ export class CourseService {
   public optionsMapping;
   constructor(private httpClient: HttpClient, private authService: AuthService) {
     this.options = [
-      { name: 'Latest', value: 'publishedDate'},
-      { name: 'Most Viewed', value: 'watched'},
-      { name: 'Most Liked', value: 'like'}
+      { name: 'Latest', value: 'publishedDate', class: 'latest'},
+      { name: 'Most Viewed', value: 'watched', class: 'mostviewed'},
+      { name: 'Most Liked', value: 'like', class: 'mostliked'}
     ];
 
     this.optionsMapping = {
