@@ -191,5 +191,17 @@
         }
       }
     }},
-  "defaultProject": "qnap-college-ng8"
+  "defaultProject": "qnap-college-ng8",
+  "schematics": {
+    "@ngrx/schematics:component": {
+      "prefix": "",
+      "styleext": "scss"
+    },
+    "@ngrx/schematics:directive": {
+      "prefix": ""
+    }
+  },
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

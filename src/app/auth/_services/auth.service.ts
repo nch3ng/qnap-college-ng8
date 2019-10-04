@@ -9,15 +9,19 @@ import { environment } from '../../../environments/environment';
 import { AuthService as SocialService } from 'angularx-social-login';
 import * as ResCode from '../../_codes/response';
 import { User } from '../_models/user.model';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/reducers';
+import { AuthActions } from '../action-types';
 
 @Injectable()
 export class AuthService {
   private apiRoot = environment.apiUrl;
   token: string;
   // tslint:disable-next-line: variable-name
-  private _loggedIn;
-  constructor(private httpClient: HttpClient, private socialService: SocialService) {
-    this._loggedIn = false;
+  constructor(
+    private httpClient: HttpClient,
+    private socialService: SocialService,
+    private store: Store<AppState>) {
   }
 
   private updating = false;
@@ -81,7 +85,8 @@ export class AuthService {
             delete ruser['hash'];
             if (ruser && ruser.token) {
               // store user details and jwt token in local storage to keep user logged in between page refreshes
-              localStorage.setItem('currentUser', JSON.stringify(ruser));
+              this.store.dispatch(AuthActions.login({ user: ruser }));
+              // localStorage.setItem('currentUser', JSON.stringify(ruser));
             }
             return ruser;
           }
@@ -97,26 +102,7 @@ export class AuthService {
       headers
     };
 
-    return this.httpClient.post<AuthResponse>(`${this.apiRoot}login`, body, options).pipe(
-      map((response: AuthResponse) => {
-        // console.log(response);
-        // login successful if there's a jwt token in the response
-        if (response.success === true) {
-          const user = response.payload;
-          // console.log(user)
-          user.token = response.token;
-          if (user && user.token) {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            // tslint:disable-next-line:no-string-literal
-            delete user['salt'];
-            // tslint:disable-next-line:no-string-literal
-            delete user['hash'];
-            this._loggedIn = true;
-            localStorage.setItem('currentUser', JSON.stringify(user));
-          }
-          return user;
-        }
-      }));
+    return this.httpClient.post<AuthResponse>(`${this.apiRoot}login`, body, options);
   }
 
   register(email: string, password: string, firstName: string, lastName: string): any {
@@ -138,8 +124,8 @@ export class AuthService {
           delete user['salt'];
           // tslint:disable-next-line:no-string-literal
           delete user['hash'];
-          this._loggedIn = true;
-          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.store.dispatch(AuthActions.login({ user }));
+          // localStorage.setItem('currentUser', JSON.stringify(user));
         }
         return user;
       } else {
@@ -148,12 +134,16 @@ export class AuthService {
     }));
   }
 
-  logout() {
+  logout(returnUrl?: string) {
+    if (!!returnUrl) {
+      return this.store.dispatch(AuthActions.logout({ returnUrl }));
+    } else {
+      return this.store.dispatch(AuthActions.logout({}));
+    }
     // remove user from local storage to log user out
-    this.token = null;
-    this._loggedIn = false;
-    this.socialService.signOut();
-    localStorage.removeItem('currentUser');
+    // this.token = null;
+    // this.store.dispatch(AuthActions.logout());
+    // this.socialService.signOut();
   }
 
   verify(): Observable<AuthResponse | AuthResponseError> {
@@ -196,7 +186,6 @@ export class AuthService {
     if (body['success'] === true) {
       // tslint:disable-next-line:no-string-literal
       this.token = body['token'];
-      this._loggedIn = true;
       localStorage.setItem('currentUser', JSON.stringify({
         // tslint:disable-next-line:no-string-literal
         email: body['user']['email'],
@@ -212,12 +201,9 @@ export class AuthService {
     return body;
   }
 
-  get loggedIn() {
-    return this._loggedIn;
-  }
-
-  set loggedIn(value: boolean) {
-    this._loggedIn = value;
+  loggedIn() {
+    const currentUser = localStorage.getItem('currentUser');
+    return !!currentUser;
   }
 
   verifyEmail(uid: string, token: string, ifReset?: boolean): Observable<{success: boolean, message: string}> {

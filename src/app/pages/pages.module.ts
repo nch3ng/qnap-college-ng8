@@ -11,7 +11,6 @@ import { PipesModule } from './../_pipes/pipes.module';
 import { FavService } from './../_services/favorite.service';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { IndexComponent } from './index/index.component';
-import { AuthService } from './../auth/_services/auth.service';
 import { AddThisService } from './../_services/addthis.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { NgcCookieConsentModule, NgcCookieConsentService } from 'ngx-cookieconsent';
@@ -66,7 +65,6 @@ import { SearchResolver } from './search/search.resolver';
     DeviceDetectorService,
     AddThisService,
     EventBrokerService,
-    AuthService,
     FavService,
     CategoryService,
     UsersService,

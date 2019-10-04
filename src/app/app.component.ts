@@ -3,6 +3,10 @@ import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from
 import { Router, NavigationEnd} from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { NgxScreensizeService } from './modules/ngx-screensize/_services/ngx-screensize.service';
+import { Store } from '@ngrx/store';
+import { AppState } from './reducers';
+import { User } from './auth/_models/user.model';
+import { AuthActions } from './auth/action-types';
 
 
 @Component({
@@ -13,13 +17,19 @@ import { NgxScreensizeService } from './modules/ngx-screensize/_services/ngx-scr
 
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   loaded = false;
+  currentUser;
   constructor(
-    private ssService: NgxScreensizeService,
     private router: Router,
     private readonly meta: MetaService,
+    private store: Store<AppState>,
     @Inject(PLATFORM_ID) private platformId: object) {
   }
   ngOnInit() {
+    const currentUser = localStorage.getItem('currentUser');
+
+    if (currentUser) {
+      this.store.dispatch(AuthActions.login({ user: JSON.parse(currentUser) }));
+    }
   }
 
   ngAfterViewInit() {

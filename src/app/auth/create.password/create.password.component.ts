@@ -1,10 +1,8 @@
 
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
-import * as ResCode from '../../_codes/response';
 import { AuthService } from '../_services/auth.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmService } from '../../_services/confirm.service';
 import { NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { PasswordService } from '../_services/password.service';
@@ -35,24 +33,24 @@ export class CreatePasswordComponent implements OnInit, AfterViewInit, OnDestroy
   @ViewChild('confirmPassword', { static: false }) confirmPasswordField: ElementRef;
 
   constructor(
-    private _authService: AuthService,
-    private _route: ActivatedRoute,
+    private authService: AuthService,
+    private route: ActivatedRoute,
     private renderer: Renderer2,
-    private _toastr: ToastrService,
-    private _router: Router,
-    private _passwordService: PasswordService
+    private toastr: ToastrService,
+    private router: Router,
+    private passwordService: PasswordService
   ) {
-    this.sub = this._route.params.subscribe(params => {
+    this.sub = this.route.params.subscribe(params => {
       // console.log(params);
-      this.uid = params['id'];
+      this.uid = params.id;
     });
-      this.routeSub = this._route.queryParams.subscribe(params => {
-        // console.log(params);
-        this.token = params['token'];
-      });
-    }
+    this.routeSub = this.route.queryParams.subscribe(params => {
+      // console.log(params);
+      this.token = params.token;
+    });
+  }
   ngOnInit() {
-    this._authService.tmpVerify(this.token).subscribe(
+    this.authService.tmpVerify(this.token).subscribe(
       (data) => {
 
         if (data && data.success) {
@@ -62,7 +60,7 @@ export class CreatePasswordComponent implements OnInit, AfterViewInit, OnDestroy
           this.valid = false;
         }
         // console.log(data);
-      }, 
+      },
       (error) => {
         this.valid = false;
         // console.log(error);
@@ -70,9 +68,7 @@ export class CreatePasswordComponent implements OnInit, AfterViewInit, OnDestroy
 
       // console.log(this.valid);
   }
-  ngAfterViewInit() {
-    
-  }
+  ngAfterViewInit() {}
 
   ngOnDestroy() {
     this.sub.unsubscribe();
@@ -80,9 +76,9 @@ export class CreatePasswordComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   resend() {
-    this._authService.resendVerification(this.uid).subscribe(
+    this.authService.resendVerification(this.uid).subscribe(
       (res) => {
-        this._toastr.success('Success');
+        this.toastr.success('Success');
       },
       (err) => {
         this.createError = true;
@@ -93,26 +89,23 @@ export class CreatePasswordComponent implements OnInit, AfterViewInit, OnDestroy
 
   onCreate(f: NgForm) {
     if (f.value.password !== f.value.confirm_password){
-      this._toastr.error('Password doesn\'t match');
+      this.toastr.error('Password doesn\'t match');
       return false;
     }
     this.creating = true;
-    this._authService.createPassword(this.uid, this.token, f.value.password).subscribe(
+    this.authService.createPassword(this.uid, this.token, f.value.password).subscribe(
       (data) => {
         // console.log(data);
-        this._toastr.success('Successfully created a password, please login.');
-        this._router.navigate(['/login'])
+        this.toastr.success('Successfully created a password, please login.');
+        this.router.navigate(['/login'])
       },
       (err) => {
-        this._toastr.error('Failed to create a password, please contact admistrator for further assistance.');
+        this.toastr.error('Failed to create a password, please contact admistrator for further assistance.');
       }
     );
   }
 
   onCheckPassword(f: NgForm) {
-    // console.log('Check Password');
-    // console.log(f.value.password);
-    // console.log(f.value.cPassword);
     if (f.value.password !== f.value.confirm_password) {
       this.createError = true;
       this.createErrorMsg = 'Password doesn\'t match';
@@ -122,20 +115,22 @@ export class CreatePasswordComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   inputPassword(f: NgForm) {
-    console.log(this._passwordService.checkPassStrength(f.value.password));
-    this.passwordStrength = this._passwordService.checkPassStrength(f.value.password);
+    console.log(this.passwordService.checkPassStrength(f.value.password));
+    this.passwordStrength = this.passwordService.checkPassStrength(f.value.password);
 
   }
 
   togglePassword() {
     console.log(this.passwordField.nativeElement.type);
     this.showPassword = !this.showPassword;
+    // tslint:disable-next-line:max-line-length
     this.passwordField.nativeElement.type === 'password' ? this.passwordField.nativeElement.type = 'text' : this.passwordField.nativeElement.type = 'password';
   }
 
   toggleConfirmPassword() {
     console.log(this.confirmPasswordField.nativeElement.value);
     this.showConfirmPassword = !this.showConfirmPassword;
+    // tslint:disable-next-line:max-line-length
     this.confirmPasswordField.nativeElement.type === 'password' ? this.confirmPasswordField.nativeElement.type = 'text' : this.confirmPasswordField.nativeElement.type = 'password';
   }
 }

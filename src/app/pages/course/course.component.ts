@@ -149,6 +149,9 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     );
 
+    // console.log(this.route.snapshot._routerState);
+    // this.returnUrl =  this.route.snapshot['_routerState'] && this.route.snapshot['_routerState'].url;
+    // console.log(this.returnUrl);
     this.sub = this.route.params.subscribe(params => {
     });
 
@@ -230,9 +233,9 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
       });
 
     // tslint:disable-next-line:no-string-literal
-    if (this.route.snapshot['routerState']) {
+    if (this.route.snapshot['_routerState']) {
       // tslint:disable-next-line:no-string-literal
-      this.returnUrl = this.route.snapshot['routerState'].url;
+      this.returnUrl = this.route.snapshot['_routerState'].url;
     }
   }
 
@@ -274,7 +277,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loggedIn = false;
     localStorage.removeItem('currentUser');
     // tslint:disable-next-line:no-string-literal
-    const url = this.route.snapshot['routerState'].url;
+    const url = this.route.snapshot['_routerState'].url;
     setTimeout(() => {
       this.setloading(false);
       this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>

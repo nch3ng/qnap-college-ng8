@@ -9,10 +9,15 @@ import { environment } from '../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import * as ResCode from '../_codes/response';
 import { AddScriptService } from '../_services/addscript.service';
-import { Subscription } from 'rxjs';
+import { Subscription, noop } from 'rxjs';
 // import { ConfirmService } from '../_services/confirm.service';
 // import { DomSanitizer } from '@angular/platform-browser';
 import { PasswordService } from './_services/password.service';
+import { AuthResponse } from '../_models/authresponse';
+import { tap, map } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { AppState } from '../reducers';
+import { AuthActions } from './action-types';
 
 // declare let gapi: any;
 
@@ -73,7 +78,8 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
     private socialService: SocialService,
     private ngZone: NgZone,
     private addScript: AddScriptService,
-    private passwordService: PasswordService) {
+    private passwordService: PasswordService,
+    private store: Store<AppState>) {
 
       this.seed = Math.floor(Math.random() * 10000000);
       this.sub = this.route.url.subscribe(
@@ -126,9 +132,9 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
   onSignin(f: NgForm) {
     this.signing = true;
     this.loading = true;
-    console.log('on sign in')
+    // console.log('on sign in')
     this.reCaptchaV3Service.execute(this.siteKey, 'login', (token) => {
-      console.log('recaptch');
+      // console.log('recaptch');
       if (!token) {
         this.toastr.error('Something went wrong');
         this.loading = false;
@@ -136,15 +142,32 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
       // console.log('This is your token: ', token);
-      this.authService.login(f.value.email, f.value.password, token).subscribe(
-        (user: User) => {
-          // console.log(user);
-          if (user.role.level === 1 && this.returnUrl === '/admin') {
-            this.returnUrl = '/admin/profile';
+      this.authService.login(f.value.email, f.value.password, token)
+      .pipe(
+        map((response:AuthResponse) => {
+          if (response.success === true) {
+            const user = response.payload;
+            user.token = response.token;
+            if (user && user.token) {
+              // store user details and jwt token in local storage to keep user logged in between page refreshes
+              // tslint:disable-next-line:no-string-literal
+              delete user['salt'];
+              // tslint:disable-next-line:no-string-literal
+              delete user['hash'];
+
+              this.store.dispatch(AuthActions.login( { user: user }));
+
+              if (user.role.level === 1 && this.returnUrl === '/admin') {
+                this.returnUrl = '/admin/profile';
+              }
+              this.loading = false;
+              this.router.navigate([this.returnUrl]);
+            }
+            return user;
           }
-          this.loading = false;
-          this.router.navigate([this.returnUrl]);
-        },
+        })
+      ).subscribe(
+        noop,
         (error) => {
           console.log(error);
           this.signing = false;
@@ -214,10 +237,13 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.router.navigate(['/user/create-password', res.uid], { queryParams: { token:  res.token, from: 'fb'} });
           } else {
+            
             if (res.role.name === 'normal' && this.returnUrl == '/admin') {
               this.returnUrl = '/admin/profile';
             }
-            this.router.navigate([this.returnUrl]);
+
+            this.store.dispatch(AuthActions.login({ user: res, returnUrl: this.returnUrl }));
+            // this.router.navigate([]);
           }
         },
         (error) => {
