@@ -5,7 +5,7 @@
       <div class="container"> &nbsp;
         <div *ngIf="commentEnabled" class='pull-right log-btn'>
             <span *ngIf="loggedIn">Hello, <a [routerLink]="['/admin/profile']">{{this.currentUser.name}}</a> | <a (click)="onSignout($event);">Logout</a></span>
-            <a href="#" [routerLink]="['/login']" [queryParams]="{returnUrl: returnUrl}" *ngIf="!loggedIn">Login</a>
+            <a href="#" [routerLink]="['/login']" [queryParams]="{returnUrl: returnUrl}" queryParamsHandling="merge" *ngIf="!loggedIn">Login</a>
         </div>
       </div>
     </header>
@@ -13,7 +13,7 @@
     <section class="sp-section latest">
       <div class="container">
         <h4>
-          <span class="vt-section-title category">{{course.code_name}} - {{course.title}}<span class="add-course-icon"><a href="/"><i _ngcontent-c3="" class="fa fa-arrow-left"></i></a></span></span>
+          <span class="vt-section-title category">{{course.code_name}} - {{course.title}}<span class="add-course-icon"><a href="/"><i _ngcontent-c3="" class="fa fa-home"></i></a></span></span>
           
         </h4>
       </div>

@@ -54,6 +54,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   private isLoggedIn$: Observable<boolean>;
   private isLoggedOut$: Observable<boolean>;
   _headerHTML = '';
+  // tslint:disable-next-line:variable-name
   _footerHTML = '';
   private addThisSub: Subscription;
   // keep refs to subscriptions to be able to unsubscribe later
@@ -113,9 +114,6 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       // Waiting loading event in router-outlet, it's a workaround, because we don't have broker on router-outlet
       this.loading = value;
     });
-  }
-
-  ngOnInit() {
     const tag = document.createElement('script');
     tag.src = '//www.youtube.com/iframe_api';
     const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -217,11 +215,14 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     //     // console.log(`revokeChoice: ${JSON.stringify(event)}`);
     //   });
   }
+
+  ngOnInit() {}
   ngAfterViewInit() {
+    // console.log(this.returnUrl);
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        (<any>window).ga('set', 'page', event.urlAfterRedirects);
-        (<any>window).ga('send', 'pageview');
+        (window as any).ga('set', 'page', event.urlAfterRedirects);
+        (window as any).ga('send', 'pageview');
       }
     });
 
@@ -230,17 +231,23 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       this.youtubeVideoHeight = Math.trunc(this.youtubeVideoWidth * (480 / 853));
     }
 
+    // tslint:disable-next-line:no-string-literal
     window['onYouTubeIframeAPIReady'] = (e) => {
+      // tslint:disable-next-line:no-string-literal
       this.YT = window['YT'];
       this.reframed = true;
+      // tslint:disable-next-line:no-string-literal
       this.player = new window['YT'].Player('player', {
         videoId: this.youtubeRef,
         width: this.youtubeVideoWidth,
         height: this.youtubeVideoHeight,
         playsinline: 0,
         events: {
+          // tslint:disable-next-line:object-literal-key-quotes
           'onStateChange': this.onPlayerStateChange.bind(this),
+          // tslint:disable-next-line:object-literal-key-quotes
           'onError': this.onPlayerError.bind(this),
+          // tslint:disable-next-line:object-literal-key-quotes
           'onReady': (event) => {
             if (!this.reframed) {
               this.reframed = true;
@@ -335,6 +342,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   onPlayerStateChange(event) {
     // console.log(event);
     switch (event.data) {
+      // tslint:disable-next-line:no-string-literal
       case window['YT'].PlayerState.PLAYING:
         if (this.cleanTime() === 0) {
           // console.log('started ' + this.cleanTime());
@@ -342,11 +350,13 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
           // console.log('playing ' + this.cleanTime());
         }
         break;
+      // tslint:disable-next-line:no-string-literal
       case window['YT'].PlayerState.PAUSED:
         if (this.player.getDuration() - this.player.getCurrentTime() !== 0) {
           // console.log('paused' + ' @ ' + this.cleanTime());
         }
         break;
+      // tslint:disable-next-line:no-string-literal
       case window['YT'].PlayerState.ENDED:
         // console.log('ended ');
         break;
@@ -378,7 +388,6 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
       this.router.navigate([url]));
     }, 500);
-    // this.authService.logout();
   }
 
   public get headerHTML(): SafeHtml {

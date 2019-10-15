@@ -14,7 +14,6 @@ import { Subscription, noop } from 'rxjs';
 import { PasswordService } from './_services/password.service';
 import { tap } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { login } from './auth.actions';
 import { AuthActions } from './action-types';
 
 // declare let gapi: any;

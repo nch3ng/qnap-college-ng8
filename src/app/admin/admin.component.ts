@@ -14,7 +14,7 @@ import { AuthActions } from '../auth/action-types';
 })
 export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  loggedIn: boolean;
+  // loggedIn: boolean;
   routeSub: Subscription;
   loading = false;
   returnUrl = '/admin/profile';
@@ -28,7 +28,7 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
     private location: Location,
     private eventBroker: EventBrokerService,
     private store: Store<AppState>) {
-    this.loggedIn = this.authService.loggedIn;
+    // this.loggedIn = this.authService.loggedIn;
     this.myEventListener = this.eventBroker.listen<boolean>('loading', (value: boolean) => {
       // Waiting loading event in router-outlet, it's a workaround, because we don't have broker on router-outlet
       this.loading = value;
@@ -67,7 +67,7 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSetLoading(event) {
-    console.log(event);
+    // console.log(event);
   }
 
 }

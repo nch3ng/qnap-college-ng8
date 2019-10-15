@@ -149,6 +149,9 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     );
 
+    // console.log(this.route.snapshot._routerState);
+    // this.returnUrl =  this.route.snapshot['_routerState'] && this.route.snapshot['_routerState'].url;
+    // console.log(this.returnUrl);
     this.sub = this.route.params.subscribe(params => {
     });
 
