@@ -1,10 +1,12 @@
+import { AuthEffects } from './auth.effects';
+import { AuthService } from './_services/auth.service';
 import { RouterModule } from '@angular/router';
 import { CommentsResolver } from './../admin/comments/comments.resolver';
 import { ConfirmationComponent } from './verification/confirmation';
 import { AuthGuard } from './_guards/auth.guard';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxCaptchaModule } from 'ngx-captcha';
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthComponent } from './auth.component';
@@ -18,6 +20,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angularx-social-login';
 import { FacebookLoginProvider } from 'angularx-social-login';
 import { environment } from 'src/environments/environment';
+import { StoreModule } from '@ngrx/store';
+import * as fromAuth from './reducers';
+import { EffectsModule } from '@ngrx/effects';
 
 const config = new AuthServiceConfig([
   {
@@ -42,7 +47,9 @@ export function provideConfig() {
     NgxCaptchaModule,
     RouterModule,
     BrowserAnimationsModule,
-    SocialLoginModule
+    SocialLoginModule,
+    StoreModule.forFeature(fromAuth.authFeatureKey, fromAuth.authReducer),
+    EffectsModule.forFeature([AuthEffects])
   ],
   declarations: [
     AuthComponent,
@@ -67,4 +74,15 @@ export function provideConfig() {
     VerificationFailedComponent
   ]
 })
-export class AuthModule { }
+export class AuthModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: AuthModule,
+      providers: [
+        PasswordService,
+        AuthService,
+        AuthGuard
+      ]
+    };
+  }
+}

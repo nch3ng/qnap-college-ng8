@@ -1,9 +1,12 @@
+import { AppState } from './../reducers/index';
 import { Subscription } from 'rxjs';
 import { Router, ActivatedRoute, NavigationStart, NavigationEnd, NavigationCancel } from '@angular/router';
 import { AuthService } from './../auth/_services/auth.service';
 import { OnInit, AfterViewInit, OnDestroy, Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { EventBrokerService, IEventListener } from '../_services/event.broker.service';
+import { Store } from '@ngrx/store';
+import { AuthActions } from '../auth/action-types';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -14,24 +17,27 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
   loggedIn: boolean;
   routeSub: Subscription;
   loading = false;
+  returnUrl = '/admin/profile';
 
-  private _myEventListener: IEventListener;
+  private myEventListener: IEventListener;
 
   constructor(
-    private _router: Router,
-    private _route: ActivatedRoute,
-    private _authService: AuthService,
-    private _location: Location,
-    private _eventBroker: EventBrokerService) {
-    this.loggedIn = this._authService.loggedIn;
-    this._myEventListener = this._eventBroker.listen<boolean>("loading",(value:boolean)=>{
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private location: Location,
+    private eventBroker: EventBrokerService,
+    private store: Store<AppState>) {
+    this.loggedIn = this.authService.loggedIn;
+    this.myEventListener = this.eventBroker.listen<boolean>('loading', (value: boolean) => {
       // Waiting loading event in router-outlet, it's a workaround, because we don't have broker on router-outlet
       this.loading = value;
     });
   }
 
   ngOnInit() {
-    this._route.params.subscribe(
+    this.returnUrl =  this.route.snapshot['_routerState'] && this.route.snapshot['_routerState'].url;
+    this.route.params.subscribe(
       () => {
         // console.log('params changed');
       }
@@ -39,7 +45,7 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.routeSub = this._router.events
+    this.routeSub = this.router.events
       .subscribe((event) => {
         if (event instanceof NavigationStart) {
           this.loading = true;
@@ -54,11 +60,10 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {}
 
-  onSignout () {
-    console.log('signout');
-    this._authService.logout();
-    // this._router.navigateByUrl('/admin');
-    location.reload();
+  onSignout() {
+    this.store.dispatch(AuthActions.adminLogout());
+    this.router.navigate(['/login'], { queryParams: { returnUrl: this.returnUrl}});
+    // location.reload();
   }
 
   onSetLoading(event) {

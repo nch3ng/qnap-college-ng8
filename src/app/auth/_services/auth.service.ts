@@ -49,10 +49,10 @@ export class AuthService {
             delete ruser['salt'];
             // tslint:disable-next-line:no-string-literal
             delete ruser['hash'];
-            if (ruser && ruser.token) {
-              // store user details and jwt token in local storage to keep user logged in between page refreshes
-              localStorage.setItem('currentUser', JSON.stringify(ruser));
-            }
+            // if (ruser && ruser.token) {
+            //   // store user details and jwt token in local storage to keep user logged in between page refreshes
+            //   localStorage.setItem('currentUser', JSON.stringify(ruser));
+            // }
             return ruser;
           }
         }
@@ -112,7 +112,7 @@ export class AuthService {
             // tslint:disable-next-line:no-string-literal
             delete user['hash'];
             this._loggedIn = true;
-            localStorage.setItem('currentUser', JSON.stringify(user));
+            // localStorage.setItem('currentUser', JSON.stringify(user));
           }
           return user;
         }
@@ -139,7 +139,6 @@ export class AuthService {
           // tslint:disable-next-line:no-string-literal
           delete user['hash'];
           this._loggedIn = true;
-          localStorage.setItem('currentUser', JSON.stringify(user));
         }
         return user;
       } else {

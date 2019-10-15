@@ -1,3 +1,4 @@
+import { User } from './../auth/_models/user.model';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth/_services/auth.service';
 import { AddThisService } from '../_services/addthis.service';
@@ -7,11 +8,15 @@ import { ModalService } from '../_services/modal.service';
 import { Router, ActivatedRoute, RouteConfigLoadEnd, NavigationEnd, NavigationStart, NavigationCancel } from '@angular/router';
 import { IEventListener, EventBrokerService } from '../_services/event.broker.service';
 import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { SearchService } from '../_services/search.service';
 import { NgcCookieConsentService, NgcInitializeEvent, NgcStatusChangeEvent } from 'ngx-cookieconsent';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import reframe from 'reframe.js';
+import { Store, select } from '@ngrx/store';
+import { AppState } from '../reducers';
+import { isLoggedIn, isLoggedOut, getUser } from '../auth/auth.selectors';
+import { AuthActions } from '../auth/action-types';
 
 @Component({
   selector: 'app-pages',
@@ -34,7 +39,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   public modalOpen: boolean;
   public firstOpened: boolean;
 
-  private currentUser: any = false;
+  // private currentUser: any = false;
   private loggedIn = false;
   private YT: any;
   private video: any;
@@ -45,6 +50,9 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   private returnUrl = '/';
   deviceInfo: any = null;
 
+  private currentUser$: Observable<User>;
+  private isLoggedIn$: Observable<boolean>;
+  private isLoggedOut$: Observable<boolean>;
   _headerHTML = '';
   _footerHTML = '';
   private addThisSub: Subscription;
@@ -92,13 +100,14 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     private addThis: AddThisService,
     private eventBroker: EventBrokerService,
     private authService: AuthService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private store: Store<AppState>) {
 
     this.deviceInfo = this.deviceService.getDeviceInfo();
     // console.log(this.deviceInfo);
     const url = this.router.url;
     this.checkBanner(url);
-    this.returnUrl =  this.route.snapshot['routerState'] && this.route.snapshot['routerState'].url;
+    this.returnUrl =  this.route.snapshot['_routerState'] && this.route.snapshot['_routerState'].url;
 
     this._myEventListener = this.eventBroker.listen<boolean>('loading', (value: boolean) => {
       // Waiting loading event in router-outlet, it's a workaround, because we don't have broker on router-outlet
@@ -116,14 +125,26 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       (res) => {
         if (res && res.success) {
           this.loggedIn = true;
-          this.currentUser = this.authService.getUser();
+          // this.currentUser = this.authService.getUser();
           // console.log(this.currentUser);
           // this.currentUserAbbvName = this.currentUser.name.split(" ").map((n)=>n[0]).join("")
         }
       },
       (err) => {
-        console.log(err);
+        console.error(err);
       }
+    );
+
+    this.isLoggedIn$ = this.store.pipe(
+      select(isLoggedIn)
+    );
+
+    this.isLoggedOut$ = this.store.pipe(
+      select(isLoggedOut)
+    );
+
+    this.currentUser$ = this.store.pipe(
+      select(getUser)
     );
     this.loading = true;
     this.goToTop = false;
@@ -347,14 +368,14 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   onSignout(e) {
     e.stopPropagation();
     // remove user from local storage to log user out
-    this.loading =true;
+    this.loading = true;
     this.loggedIn = false;
-    localStorage.removeItem('currentUser');
+    this.store.dispatch(AuthActions.logout());
     // tslint:disable-next-line:no-string-literal
-    const url = this.route.snapshot['routerState'].url;
+    const url = this.route.snapshot['_routerState'].url;
     setTimeout(() => {
       this.loading = false;
-      this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
       this.router.navigate([url]));
     }, 500);
     // this.authService.logout();

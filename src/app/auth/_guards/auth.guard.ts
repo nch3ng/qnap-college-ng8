@@ -1,5 +1,6 @@
+import { isLoggedIn } from './../auth.selectors';
 
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { AuthService } from './../_services/auth.service';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, ActivatedRoute } from '@angular/router';
@@ -7,15 +8,17 @@ import { Observable, throwError } from 'rxjs';
 
 
 import { ToastrService } from 'ngx-toastr';
+import { AppState } from 'src/app/reducers';
+import { Store, select } from '@ngrx/store';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private authService: AuthService,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private store: Store<AppState>) {
   }
 
   private getUrlParameter(url, name) {
@@ -42,6 +45,15 @@ export class AuthGuard implements CanActivate {
         return false;
       }
     }
+
+    this.store.pipe(
+      select(isLoggedIn),
+      tap(loggedIn => {
+        if (!loggedIn) {
+          this.router.navigateByUrl('/login');
+        }
+      })
+    );
     return this.authService.verify().pipe(map(
       (data) => {
         // console.log('[AuthGuard] data: ', data);

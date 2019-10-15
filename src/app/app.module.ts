@@ -21,6 +21,12 @@ import { MetaModule, MetaLoader, metaFactory } from '@ngx-meta/core';
 import { NgxPageScrollCoreModule } from 'ngx-page-scroll-core';
 import { NgcCookieConsentConfig, NgcCookieConsentModule } from 'ngx-cookieconsent';
 import { ToastrModule } from 'ngx-toastr';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
+import { AppEffects } from './app.effects';
 
 const cookieConfig: NgcCookieConsentConfig = {
   cookie: {
@@ -68,9 +74,18 @@ const cookieConfig: NgcCookieConsentConfig = {
     MomentModule,
     PagesModule,
     ToastrModule.forRoot(),
-    AuthModule,
+    AuthModule.forRoot(),
     ModalModule.forRoot(),
     BootstrapModalModule,
+    StoreModule.forRoot(reducers, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      }
+    }),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    EffectsModule.forRoot([AppEffects]),
   ],
   providers: [
     CoursesResolver,

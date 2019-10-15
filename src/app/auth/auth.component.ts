@@ -1,3 +1,4 @@
+import { AppState } from './../reducers/index';
 import { FacebookLoginProvider, GoogleLoginProvider, AuthService as SocialService } from 'angularx-social-login';
 import { User } from './_models/user.model';
 import { AuthService } from './_services/auth.service';
@@ -9,10 +10,12 @@ import { environment } from '../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import * as ResCode from '../_codes/response';
 import { AddScriptService } from '../_services/addscript.service';
-import { Subscription } from 'rxjs';
-// import { ConfirmService } from '../_services/confirm.service';
-// import { DomSanitizer } from '@angular/platform-browser';
+import { Subscription, noop } from 'rxjs';
 import { PasswordService } from './_services/password.service';
+import { tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { login } from './auth.actions';
+import { AuthActions } from './action-types';
 
 // declare let gapi: any;
 
@@ -73,7 +76,8 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
     private socialService: SocialService,
     private ngZone: NgZone,
     private addScript: AddScriptService,
-    private passwordService: PasswordService) {
+    private passwordService: PasswordService,
+    private store: Store<AppState>) {
 
       this.seed = Math.floor(Math.random() * 10000000);
       this.sub = this.route.url.subscribe(
@@ -126,9 +130,9 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
   onSignin(f: NgForm) {
     this.signing = true;
     this.loading = true;
-    console.log('on sign in')
+    // console.log('on sign in')
     this.reCaptchaV3Service.execute(this.siteKey, 'login', (token) => {
-      console.log('recaptch');
+      // console.log('recaptch');
       if (!token) {
         this.toastr.error('Something went wrong');
         this.loading = false;
@@ -136,17 +140,21 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
       // console.log('This is your token: ', token);
-      this.authService.login(f.value.email, f.value.password, token).subscribe(
-        (user: User) => {
+      this.authService.login(f.value.email, f.value.password, token).pipe(
+        tap((user: User) => {
           // console.log(user);
           if (user.role.level === 1 && this.returnUrl === '/admin') {
             this.returnUrl = '/admin/profile';
           }
+
+          this.store.dispatch(AuthActions.login({user}));
           this.loading = false;
           this.router.navigate([this.returnUrl]);
-        },
+        })
+      ).subscribe(
+        noop,
         (error) => {
-          console.log(error);
+          console.error(error);
           this.signing = false;
           this.loading = false;
 
@@ -176,19 +184,21 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
       // console.log('This is your token: ', token);
-      this.authService.register(f.value.email, f.value.password, f.value.firstName, f.value.lastName).subscribe(
-        (res: any) => {
+      this.authService.register(f.value.email, f.value.password, f.value.firstName, f.value.lastName).pipe(
+        tap((res: any) => {
           this.loading = false;
-          console.log(res);
           if (!res) {
             this.loading = false;
             this.registering = false;
             this.regError = true;
             this.regErrorMsg = "Oops, account exists. <a [routerLink]=\"['/login']\">Login</a> with your account?";
           } else {
+            this.store.dispatch(AuthActions.login({user: res}));
             this.toastr.success('A validation email has been sent, please validate by clicking the link in email');
           }
-        },
+        })
+      ).subscribe(
+        noop,
         (error) => {
           this.loading = false;
           this.registering = false;
@@ -206,23 +216,24 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
       const requestBoody = {
         accessToken: user['authToken']
       };
-      this.authService.fbLogin(requestBoody).subscribe(
-
-        (res: any) => {
+      this.authService.fbLogin(requestBoody).pipe(
+        tap((res: any) => {
           // console.log("[onFacebookLogin]", res);
           if (res.code === ResCode.PASSWORD_HAS_NOT_BEEN_CREATED) {
 
             this.router.navigate(['/user/create-password', res.uid], { queryParams: { token:  res.token, from: 'fb'} });
           } else {
-            if (res.role.name === 'normal' && this.returnUrl == '/admin') {
+            this.store.dispatch(AuthActions.login({user: res}));
+            if (res.role.name === 'normal' && this.returnUrl === '/admin') {
               this.returnUrl = '/admin/profile';
             }
             this.router.navigate([this.returnUrl]);
           }
-        },
+        })
+      ).subscribe(noop,
         (error) => {
-          this.loading = false;
           console.error(error);
+          this.loading = false;
           this.signing = false;
           this.loginError = true;
           this.loginErrorMsg = error.error.message;
@@ -252,7 +263,22 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
         accessToken: authToken
       };
 
-      this.authService.googleLogin(payload).subscribe(
+      this.authService.googleLogin(payload).pipe(
+        tap((res: any) => {
+          this.loading = false;
+          this.signing = false;
+          // console.log("[onFacebookLogin]", res);
+          if (res.code === ResCode.PASSWORD_HAS_NOT_BEEN_CREATED) {
+            this.router.navigate(['/user/create-password', res.uid], { queryParams: { token:  res.token, from: 'google'} });
+          } else {
+            this.store.dispatch(AuthActions.login({user: res}));
+            if (res.role.name === 'normal' && this.returnUrl === '/admin') {
+              this.returnUrl = '/admin/profile';
+            }
+            this._navigate([this.returnUrl]);
+          }
+        })
+      ).subscribe(
         (res: any) => {
           this.loading = false;
           this.signing = false;
