@@ -24,7 +24,7 @@ export class AuthEffects {
       tap(action => {
         localStorage.removeItem('currentUser');
         this.socialService.signOut();
-        const returnUrl = action.returnUrl ? action.returnUrl : '/login'
+        const returnUrl = action.returnUrl ? action.returnUrl : '/login';
         this.router.navigateByUrl(returnUrl);
       })
     ), { dispatch: false });
