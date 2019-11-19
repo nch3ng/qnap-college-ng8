@@ -1,3 +1,4 @@
+import { User } from './../auth/_models/user.model';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth/_services/auth.service';
 import { AddThisService } from '../_services/addthis.service';
@@ -7,12 +8,15 @@ import { ModalService } from '../_services/modal.service';
 import { Router, ActivatedRoute, RouteConfigLoadEnd, NavigationEnd, NavigationStart, NavigationCancel } from '@angular/router';
 import { IEventListener, EventBrokerService } from '../_services/event.broker.service';
 import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { SearchService } from '../_services/search.service';
 import { NgcCookieConsentService, NgcInitializeEvent, NgcStatusChangeEvent } from 'ngx-cookieconsent';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import reframe from 'reframe.js';
-import { ToastrService } from 'ngx-toastr';
+import { Store, select } from '@ngrx/store';
+import { AppState } from '../reducers';
+import { isLoggedIn, isLoggedOut, getUser } from '../auth/auth.selectors';
+import { AuthActions } from '../auth/action-types';
 
 @Component({
   selector: 'app-pages',
@@ -35,7 +39,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   public modalOpen: boolean;
   public firstOpened: boolean;
 
-  private currentUser: any = false;
+  // private currentUser: any = false;
   private loggedIn = false;
   private YT: any;
   private video: any;
@@ -46,6 +50,9 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   private returnUrl = '/';
   deviceInfo: any = null;
 
+  private currentUser$: Observable<User>;
+  private isLoggedIn$: Observable<boolean>;
+  private isLoggedOut$: Observable<boolean>;
   // tslint:disable-next-line:variable-name
   _headerHTML = '';
   // tslint:disable-next-line:variable-name
@@ -96,10 +103,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     private eventBroker: EventBrokerService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private toastr: ToastrService) {
-  }
-
-  ngOnInit() {
+    private store: Store<AppState>) {
 
     this.deviceInfo = this.deviceService.getDeviceInfo();
     // console.log(this.deviceInfo);
@@ -107,6 +111,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.checkBanner(url);
     // tslint:disable-next-line:no-string-literal
     this.returnUrl =  this.route.snapshot['_routerState'] && this.route.snapshot['_routerState'].url;
+
     this._myEventListener = this.eventBroker.listen<boolean>('loading', (value: boolean) => {
       // Waiting loading event in router-outlet, it's a workaround, because we don't have broker on router-outlet
       this.loading = value;
@@ -120,14 +125,26 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       (res) => {
         if (res && res.success) {
           this.loggedIn = true;
-          this.currentUser = this.authService.getUser();
+          // this.currentUser = this.authService.getUser();
           // console.log(this.currentUser);
           // this.currentUserAbbvName = this.currentUser.name.split(" ").map((n)=>n[0]).join("")
         }
       },
       (err) => {
-        console.log(err);
+        console.error(err);
       }
+    );
+
+    this.isLoggedIn$ = this.store.pipe(
+      select(isLoggedIn)
+    );
+
+    this.isLoggedOut$ = this.store.pipe(
+      select(isLoggedOut)
+    );
+
+    this.currentUser$ = this.store.pipe(
+      select(getUser)
     );
     this.loading = true;
     this.goToTop = false;
@@ -200,6 +217,8 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     //     // console.log(`revokeChoice: ${JSON.stringify(event)}`);
     //   });
   }
+
+  ngOnInit() {}
   ngAfterViewInit() {
     // console.log(this.returnUrl);
     this.router.events.subscribe(event => {
@@ -363,9 +382,13 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     // remove user from local storage to log user out
     this.loading = true;
     this.loggedIn = false;
-    this.authService.logout('/');
+    this.store.dispatch(AuthActions.logout({returnUrl: '/'}));
+    // tslint:disable-next-line:no-string-literal
+    const url = this.route.snapshot['_routerState'].url;
     setTimeout(() => {
       this.loading = false;
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
+      this.router.navigate([url]));
     }, 500);
   }
 

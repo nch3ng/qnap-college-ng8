@@ -1,10 +1,17 @@
-import { createAction, props } from '@ngrx/store';
 import { User } from './_models/user.model';
+import { createAction, props } from '@ngrx/store';
 
 export const login = createAction(
-      '[User Login] Login',
-      props<{user: User, returnUrl?: string}>());
+  '[Login Page] User Login',
+  props<{user: User}>()
+);
 
 export const logout = createAction(
-      '[User Logout] Logout',
-      props<{ returnUrl?: string }>());
+  '[Front Page] User Logout',
+  props<{returnUrl: string}>()
+);
+
+export const adminLogout = createAction(
+  '[Admin Page] User Logout'
+);
+

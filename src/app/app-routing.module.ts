@@ -12,7 +12,7 @@ const routes: Routes = [
   {
     // path: '', component: PagesComponent
     path: '',
-    loadChildren: './pages/pages.module#PagesModule',
+    loadChildren: () => import('./pages/pages.module').then(m =>  m.PagesModule),
   },
   {
     path: 'login', component: AuthComponent
@@ -27,7 +27,7 @@ const routes: Routes = [
     path: 'forget-password', component: ForgetPasswordComponent
   },
   {
-    path: 'admin', loadChildren: './admin/admin.module#AdminModule',
+    path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
     canActivate: [AuthGuard]
   },
   {

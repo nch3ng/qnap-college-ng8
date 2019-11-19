@@ -47,7 +47,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.sub = this._route.data.subscribe(
       (data: Data) => {
-        console.log(data)
+        // console.log(data)
         if (data.doc) {
           this.doc = data.doc;
           this.users = this.doc.docs;

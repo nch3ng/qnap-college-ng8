@@ -1,3 +1,5 @@
+import { AuthEffects } from './auth.effects';
+import { AuthService } from './_services/auth.service';
 import { RouterModule } from '@angular/router';
 import { CommentsResolver } from './../admin/comments/comments.resolver';
 import { ConfirmationComponent } from './verification/confirmation';
@@ -19,10 +21,8 @@ import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angul
 import { FacebookLoginProvider } from 'angularx-social-login';
 import { environment } from 'src/environments/environment';
 import { StoreModule } from '@ngrx/store';
-import { authReducer } from './reducers';
+import * as fromAuth from './reducers';
 import { EffectsModule } from '@ngrx/effects';
-import { AuthEffects } from './auth.effects';
-import { AuthService } from './_services/auth.service';
 
 const config = new AuthServiceConfig([
   {
@@ -48,7 +48,7 @@ export function provideConfig() {
     RouterModule,
     BrowserAnimationsModule,
     SocialLoginModule,
-    StoreModule.forFeature('auth', authReducer),
+    StoreModule.forFeature(fromAuth.authFeatureKey, fromAuth.authReducer),
     EffectsModule.forFeature([AuthEffects])
   ],
   declarations: [
@@ -77,10 +77,12 @@ export function provideConfig() {
 export class AuthModule {
   static forRoot(): ModuleWithProviders {
     return {
-        ngModule: AuthModule,
-        providers: [
-          AuthService
-        ]
+      ngModule: AuthModule,
+      providers: [
+        PasswordService,
+        AuthService,
+        AuthGuard
+      ]
     };
-}
+  }
 }

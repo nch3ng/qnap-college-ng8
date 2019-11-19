@@ -53,10 +53,10 @@ export class AuthService {
             delete ruser['salt'];
             // tslint:disable-next-line:no-string-literal
             delete ruser['hash'];
-            if (ruser && ruser.token) {
-              // store user details and jwt token in local storage to keep user logged in between page refreshes
-              localStorage.setItem('currentUser', JSON.stringify(ruser));
-            }
+            // if (ruser && ruser.token) {
+            //   // store user details and jwt token in local storage to keep user logged in between page refreshes
+            //   localStorage.setItem('currentUser', JSON.stringify(ruser));
+            // }
             return ruser;
           }
         }
@@ -102,7 +102,25 @@ export class AuthService {
       headers
     };
 
-    return this.httpClient.post<AuthResponse>(`${this.apiRoot}login`, body, options);
+    return this.httpClient.post<AuthResponse>(`${this.apiRoot}login`, body, options).pipe(
+      map((response: AuthResponse) => {
+        // console.log(response);
+        // login successful if there's a jwt token in the response
+        if (response.success === true) {
+          const user = response.payload;
+          // console.log(user)
+          user.token = response.token;
+          if (user && user.token) {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            // tslint:disable-next-line:no-string-literal
+            delete user['salt'];
+            // tslint:disable-next-line:no-string-literal
+            delete user['hash'];
+            // localStorage.setItem('currentUser', JSON.stringify(user));
+          }
+          return user;
+        }
+      }));
   }
 
   register(email: string, password: string, firstName: string, lastName: string): any {
@@ -124,8 +142,6 @@ export class AuthService {
           delete user['salt'];
           // tslint:disable-next-line:no-string-literal
           delete user['hash'];
-          this.store.dispatch(AuthActions.login({ user }));
-          // localStorage.setItem('currentUser', JSON.stringify(user));
         }
         return user;
       } else {
@@ -135,11 +151,11 @@ export class AuthService {
   }
 
   logout(returnUrl?: string) {
-    if (!!returnUrl) {
-      return this.store.dispatch(AuthActions.logout({ returnUrl }));
-    } else {
-      return this.store.dispatch(AuthActions.logout({}));
-    }
+    // if (!!returnUrl) {
+    //   return this.store.dispatch(AuthActions.logout({ returnUrl }));
+    // } else {
+    //   return this.store.dispatch(AuthActions.logout({}));
+    // }
     // remove user from local storage to log user out
     // this.token = null;
     // this.store.dispatch(AuthActions.logout());
