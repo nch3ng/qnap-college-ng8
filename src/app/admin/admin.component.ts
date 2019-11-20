@@ -6,7 +6,7 @@ import { OnInit, AfterViewInit, OnDestroy, Component } from '@angular/core';
 import { Location } from '@angular/common';
 import { EventBrokerService, IEventListener } from '../_services/event.broker.service';
 import { Store } from '@ngrx/store';
-import { AuthActions } from '../auth/action-types';
+import { AuthActions } from '../auth/store/actions';
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
@@ -36,6 +36,7 @@ export class AdminComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    // tslint:disable-next-line:no-string-literal
     this.returnUrl =  this.route.snapshot['_routerState'] && this.route.snapshot['_routerState'].url;
     this.route.params.subscribe(
       () => {

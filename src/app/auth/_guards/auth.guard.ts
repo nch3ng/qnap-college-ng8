@@ -1,4 +1,4 @@
-import { isLoggedIn } from './../auth.selectors';
+import { isLoggedIn } from '../store/selectors';
 
 import { tap } from 'rxjs/operators';
 import { AuthService } from './../_services/auth.service';
@@ -10,7 +10,7 @@ import { Observable, throwError, noop } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
-import { getAuthUser } from '../auth.select';
+import { getUser } from '../store/selectors';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -42,7 +42,7 @@ export class AuthGuard implements CanActivate {
           this.router.navigateByUrl('/login');
         } else {
           this.store.pipe(
-            select(getAuthUser),
+            select(getUser),
             tap(user => {
               // tslint:disable-next-line:no-string-literal
               const roles = route.data['roles'] as Array<string>;

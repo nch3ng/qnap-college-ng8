@@ -26,11 +26,12 @@ import { NgModule } from '@angular/core';
 import { SearchService } from '../_services/search.service';
 import { HttpClientModule } from '@angular/common/http';
 import { EventBrokerService } from '../_services/event.broker.service';
-import { SafePipe } from '../_pipes/safe.pipe';
 import { SecurityModule } from '../admin/_directives/security.module';
 import { UsersService } from '../auth/_services/users.service';
 import { SearchComponent } from './search/search.component';
 import { SearchResolver } from './search/search.resolver';
+import { CourseModule } from './course/course.module';
+import { CoursesModule } from './index/courses.module';
 
 @NgModule({
   imports: [
@@ -42,20 +43,19 @@ import { SearchResolver } from './search/search.resolver';
     NgPipesModule,
     NgcCookieConsentModule,
     HttpClientModule,
-    InfiniteScrollModule,
     NgxCaptchaModule,
+    CourseModule,
     SecurityModule,
-    PipesModule
+    PipesModule,
+    CoursesModule
   ],
   declarations: [
     PagesComponent,
-    IndexComponent,
-    SafePipe,
+    // IndexComponent,
     CategoryComponent,
     SearchComponent,
     NotFoundComponent,
     // RunScriptsDirective,
-    CourseComponent,
     TermsOfUseComponent,
   ],
   providers: [

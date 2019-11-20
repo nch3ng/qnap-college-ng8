@@ -11,7 +11,7 @@ import * as ResCode from '../../_codes/response';
 import { User } from '../_models/user.model';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { AuthActions } from '../action-types';
+import { AuthActions } from '../store/actions';
 
 @Injectable()
 export class AuthService {

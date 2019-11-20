@@ -5,7 +5,7 @@ import { AuthService } from './../../auth/_services/auth.service';
 import { CourseDoc } from './../../_models/document';
 import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef, ViewChild, ElementRef, ApplicationRef } from '@angular/core';
 import { ActivatedRoute, Data, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { Course } from '../../_models/course';
 import { CourseService } from '../../_services/course.service';
 import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -17,6 +17,8 @@ import { ReCaptchaV3Service, InvisibleReCaptchaComponent } from 'ngx-captcha';
 import { ConfirmService } from '../../_services/confirm.service';
 import { AddScriptService } from '../../_services/addscript.service';
 import { FavService } from '../../_services/favorite.service';
+import { AppState } from 'src/app/reducers';
+import { Store } from '@ngrx/store';
 
 // declare let gapi: any;
 
@@ -31,6 +33,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   routeSub: Subscription;
   addThisSub: Subscription;
   course: Course;
+  course1$: Observable<Course>;
   courses: Course [];
   youtubeSrc;
   keywords;
@@ -75,7 +78,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private route: ActivatedRoute,
-    private courseService: CourseService, 
+    private courseService: CourseService,
     private router: Router,
     private addThis: AddThisService,
     private readonly meta: MetaService,
@@ -87,7 +90,8 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private eventBroker: EventBrokerService,
     private confirmService: ConfirmService,
     private addScript: AddScriptService,
-    private favService: FavService) {
+    private favService: FavService,
+    private store: Store<AppState>) {
 
     this.courseService.all(4, 'watched').subscribe(
       (coursedoc: CourseDoc) => {
@@ -135,13 +139,21 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.meta.setTag('og:description', 'Course description');
     this.meta.setTag('og:url', 'https://college.qnap.com/course/5b5105d1e449ca649bbc1675');
 
+    // this.course1$ = this.store.pipe(
+    //   select(selectCourse)
+    // );
+
+    // this.course1$.subscribe(c => {
+    //   console.log(c);
+    // });
+
     this.authService.verify().subscribe(
       (res) => {
         if (res && res.success) {
           this.loggedIn = true;
           this.currentUser = this.authService.getUser();
           // console.log(this.currentUser);
-          this.currentUserAbbvName = this.currentUser.name.split(" ").map((n)=>n[0]).join("")
+          this.currentUserAbbvName = this.currentUser.name.split(' ').map((n) => n[0]).join('');
         }
       },
       (err) => {
@@ -170,8 +182,10 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
               let i = 0;
               for (const comment of this.comments) {
                 const idx = i;
+                // tslint:disable-next-line:no-string-literal
                 this.usersService.getAbbv(comment['owner_id']).subscribe(
                   (res) => {
+                    // tslint:disable-next-line:no-string-literal
                     this.comments[idx]['poster_name'] = res['name'];
                     // console.log(idx);
                     // console.log(this.comments);
@@ -264,7 +278,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     let scriptOnPage = false;
     const selector = 'script[src*="addthis_widget.js"]';
     const matches = document.querySelectorAll(selector);
-    if(matches.length > 0) {
+    if (matches.length > 0) {
         scriptOnPage = true;
     }
     return scriptOnPage;
@@ -310,7 +324,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // append SCRIPT element
 
-    if(scriptInFooter !== true && typeof document.head === 'object') {
+    if (scriptInFooter !== true && typeof document.head === 'object') {
       document.head.appendChild(script);
     } else {
       document.body.appendChild(script);
@@ -372,7 +386,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
               }
             },
             (error) => {
-              this.toastr.error('Couldn\'t get comments')
+              this.toastr.error('Couldn\'t get comments');
             });
           this.setloading(false);
         },

@@ -7,8 +7,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { NgxScreensizeService } from './modules/ngx-screensize/_services/ngx-screensize.service';
 import { AppState } from './reducers';
 import { Store, select } from '@ngrx/store';
-import { AuthActions } from './auth/action-types';
-import { isLoggedIn, isLoggedOut } from './auth/auth.selectors';
+import { AuthActions } from './auth/store/actions';
+import { isLoggedIn, isLoggedOut } from './auth/store/selectors';
 
 
 @Component({

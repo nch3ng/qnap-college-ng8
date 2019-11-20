@@ -1,4 +1,4 @@
-import { AuthEffects } from './auth.effects';
+import { AuthEffects } from './store/effects';
 import { AuthService } from './_services/auth.service';
 import { RouterModule } from '@angular/router';
 import { CommentsResolver } from './../admin/comments/comments.resolver';
@@ -21,7 +21,7 @@ import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angul
 import { FacebookLoginProvider } from 'angularx-social-login';
 import { environment } from 'src/environments/environment';
 import { StoreModule } from '@ngrx/store';
-import * as fromAuth from './reducers';
+import * as fromAuth from './store/reducers';
 import { EffectsModule } from '@ngrx/effects';
 
 const config = new AuthServiceConfig([

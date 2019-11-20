@@ -15,8 +15,8 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import reframe from 'reframe.js';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../reducers';
-import { isLoggedIn, isLoggedOut, getUser } from '../auth/auth.selectors';
-import { AuthActions } from '../auth/action-types';
+import { isLoggedIn, isLoggedOut, getUser } from '../auth/store/selectors';
+import { AuthActions } from '../auth/store/actions';
 
 @Component({
   selector: 'app-pages',
