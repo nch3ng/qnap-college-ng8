@@ -27,6 +27,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LayoutModule } from '@angular/cdk/layout';
 
 const cookieConfig: NgcCookieConsentConfig = {
   cookie: {
@@ -81,11 +84,16 @@ const cookieConfig: NgcCookieConsentConfig = {
       metaReducers,
       runtimeChecks: {
         strictStateImmutability: true,
-        strictActionImmutability: true
+        strictActionImmutability: true,
+        // strictActionSerializability: true,
+        // strictStateSerializability: true
       }
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     EffectsModule.forRoot([AppEffects]),
+    // StoreRouterConnectingModule.forRoot(),
+    BrowserAnimationsModule,
+    LayoutModule
   ],
   providers: [
     CoursesResolver,

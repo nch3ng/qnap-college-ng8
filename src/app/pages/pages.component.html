@@ -62,5 +62,5 @@
     <router-outlet></router-outlet>
   </article>
 </div>
-<div [innerHTML]="footerHTML"></div>
+<div [innerHTML]="footerHTML$ | async"></div>
 <div href="#main" pageScroll [pageScrollOffset]="0" [pageScrollDuration]="500" id="go-to-top" class="icon-angle-up" [ngClass]="{'show': goToTop, 'hide': !goToTop}"></div>

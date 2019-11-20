@@ -40,11 +40,12 @@ export class NgxScreensizeService {
         return a[1] - b[1];
       });
     // End sorting
-    document.addEventListener('DOMContentLoaded', () => {
-      this.sizeClass();
-    });
+
+    // });
+    this.sizeClass();
 
     window.addEventListener('orientationchange', (event) => {
+      console.log('orientationchange');
       setTimeout( () => {
         this.sizeClass();
       }, 100);
@@ -52,8 +53,8 @@ export class NgxScreensizeService {
   }
 
   refreshSize() {
-    this.x = document.documentElement.clientWidth;
-    this.y = document.documentElement.clientHeight;
+    this.x = this.getWidth();
+    this.y = this.getHeight();
   }
 
   getScreensize() {
@@ -61,8 +62,9 @@ export class NgxScreensizeService {
   }
 
   sizeClass(): string {
-    this.x = document.documentElement.clientWidth;
-    this.y = document.documentElement.clientHeight;
+    this.x = this.getWidth();
+    this.y = this.getHeight();
+
     for (const size of this.sortable_array) {
       if (this.x < +size[1]) {
         // console.log(this.x + ' ' + size[1]);
@@ -82,5 +84,20 @@ export class NgxScreensizeService {
     this.renderer.removeClass(this.document.body, 'md');
     this.renderer.removeClass(this.document.body, 'lg');
     this.renderer.removeClass(this.document.body, 'xl');
+  }
+
+  getWidth() {
+    return window.innerWidth && document.documentElement.clientWidth ?
+      Math.min(window.innerWidth, document.documentElement.clientWidth) :
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.getElementsByTagName('body')[0].clientWidth;
+  }
+  getHeight() {
+    return window.innerHeight && document.documentElement.clientHeight ?
+      Math.min(window.innerHeight, document.documentElement.clientHeight) :
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      document.getElementsByTagName('body')[0].clientHeight;
   }
 }

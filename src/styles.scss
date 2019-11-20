@@ -1351,3 +1351,9 @@ button.reg-button:disabled {
     }
   }
 }
+
+.common-menu, .login-popup, .btn-back-top {
+  display: none !important;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

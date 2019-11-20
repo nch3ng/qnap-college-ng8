@@ -33,11 +33,11 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot,
   ): Observable<boolean> | Promise<boolean> | boolean {
-    console.log('canActivate');
+    // console.log('canActivate');
     return this.store.pipe(
       select(isLoggedIn),
       tap(loggedIn => {
-        console.log(loggedIn);
+        // console.log(loggedIn);
         if (!loggedIn) {
           this.router.navigateByUrl('/login');
         } else {

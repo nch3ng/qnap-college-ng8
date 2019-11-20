@@ -1,14 +1,14 @@
+import { HttpClient } from '@angular/common/http';
 import { User } from './../auth/_models/user.model';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth/_services/auth.service';
 import { AddThisService } from '../_services/addthis.service';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NgxScreensizeService } from '../modules/ngx-screensize/_services/ngx-screensize.service';
 import { ModalService } from '../_services/modal.service';
 import { Router, ActivatedRoute, RouteConfigLoadEnd, NavigationEnd, NavigationStart, NavigationCancel } from '@angular/router';
 import { IEventListener, EventBrokerService } from '../_services/event.broker.service';
-import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Subscription, Observable } from 'rxjs';
+import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
+import { Subscription, Observable, noop } from 'rxjs';
 import { SearchService } from '../_services/search.service';
 import { NgcCookieConsentService, NgcInitializeEvent, NgcStatusChangeEvent } from 'ngx-cookieconsent';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -17,6 +17,8 @@ import { Store, select } from '@ngrx/store';
 import { AppState } from '../reducers';
 import { isLoggedIn, isLoggedOut, getUser } from '../auth/auth.selectors';
 import { AuthActions } from '../auth/action-types';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-pages',
@@ -50,10 +52,17 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   private returnUrl = '/';
   deviceInfo: any = null;
 
-  private currentUser$: Observable<User>;
-  private isLoggedIn$: Observable<boolean>;
-  private isLoggedOut$: Observable<boolean>;
-  _headerHTML = '';
+  private currentUser$: Observable<User> = this.store.pipe(
+    select(getUser)
+  );
+  private isLoggedIn$: Observable<boolean> = this.store.pipe(
+    select(isLoggedIn)
+  );
+  private isLoggedOut$: Observable<boolean> = this.store.pipe(
+    select(isLoggedOut)
+  );
+  private footerHTML$: Observable<SafeHtml>;
+  // _headerHTML = '';
   // tslint:disable-next-line:variable-name
   _footerHTML = '';
   private addThisSub: Subscription;
@@ -94,16 +103,15 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private searchService: SearchService,
     private modalService: ModalService,
-    private ccService: NgcCookieConsentService,
     private deviceService: DeviceDetectorService,
     private ssService: NgxScreensizeService,
-    private sanitizer: DomSanitizer,
     private addThis: AddThisService,
     private eventBroker: EventBrokerService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private store: Store<AppState>) {
-
+    private store: Store<AppState>,
+    private httpClient: HttpClient,
+    private breakpointObserver: BreakpointObserver) {
     this.deviceInfo = this.deviceService.getDeviceInfo();
     // console.log(this.deviceInfo);
     const url = this.router.url;
@@ -131,18 +139,6 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       (err) => {
         console.error(err);
       }
-    );
-
-    this.isLoggedIn$ = this.store.pipe(
-      select(isLoggedIn)
-    );
-
-    this.isLoggedOut$ = this.store.pipe(
-      select(isLoggedOut)
-    );
-
-    this.currentUser$ = this.store.pipe(
-      select(getUser)
     );
     this.loading = true;
     this.goToTop = false;
@@ -216,7 +212,13 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     //   });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOMContentReady');
+    });
+    // tslint:disable-next-line:max-line-length
+    this.footerHTML$ = this.httpClient.get('https://www.qnap.com/i/_aid/footer.php?lang_set=en-us&lc_demo=/solution/virtualization-station-3/en/', {responseType: 'text'});
+  }
   ngAfterViewInit() {
     // console.log(this.returnUrl);
     this.router.events.subscribe(event => {
@@ -226,11 +228,15 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
+    console.log(this.ssService.getScreensize());
     if (this.ssService.getScreensize().x <= 768 ) {
       this.youtubeVideoWidth = this.ssService.getScreensize().x;
       this.youtubeVideoHeight = Math.trunc(this.youtubeVideoWidth * (480 / 853));
     }
 
+    // const isSmallScreen = this.breakpointObserver.isMatched('(max-width: 768px)');
+
+    // console.log(this.youtubeVideoWidth);
     // tslint:disable-next-line:no-string-literal
     window['onYouTubeIframeAPIReady'] = (e) => {
       // tslint:disable-next-line:no-string-literal
@@ -293,14 +299,6 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     //   }
     // );
     // this.loadScript('//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a0dd7aa711366bd');
-    // tslint:disable-next-line:max-line-length
-    // this.httpClient.get('https://www.qnap.com/i/_aid/footer.php?lang_set=en-us&lc_demo=/solution/virtualization-station-3/en/', {responseType: 'text'}).subscribe(
-    //   (data) => {
-    //     this._footerHTML = data;
-    //   },
-    //   (error) => {
-    //   }
-    // );
   }
 
   ngOnDestroy() {
@@ -388,14 +386,6 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
       this.router.navigate([url]));
     }, 500);
-  }
-
-  public get headerHTML(): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(this._headerHTML);
-  }
-
-  public get footerHTML(): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(this._footerHTML);
   }
 
   private loadScript(script) {
