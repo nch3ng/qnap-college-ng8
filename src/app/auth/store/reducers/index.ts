@@ -1,9 +1,9 @@
-import { User } from './../_models/user.model';
+import { User } from '../../_models/user.model';
 import {
   createReducer,
   on
 } from '@ngrx/store';
-import { AuthActions } from '../action-types';
+import { AuthActions } from '../actions';
 
 export const authFeatureKey = 'auth';
 

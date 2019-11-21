@@ -1,4 +1,3 @@
-import { MetaService } from '@ngx-meta/core';
 import { CourseDoc } from './../../_models/document';
 import { ModalService } from './../../_services/modal.service';
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy, HostListener } from '@angular/core';
@@ -12,6 +11,7 @@ import { CourseService } from '../../_services/course.service';
 import * as _ from 'lodash';
 import { AuthService } from '../../auth/_services/auth.service';
 import { FavService } from '../../_services/favorite.service';
+import { Observable, noop } from 'rxjs';
 
 @Component({
   selector: 'app-index',
@@ -43,6 +43,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
   currentUser = null;
   currentUserAbbvName = 'JD';
 
+  coursesob$: Observable<Course []>;
+
   @HostListener('window:scroll', ['$event'])
   currentPosition() {
     if (window.pageYOffset + 300 > this.collectionEl.nativeElement.offsetHeight) {
@@ -64,6 +66,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
   ngOnInit() {
+
     const localColSetting = localStorage.getItem('grid-col');
     this.cGridWidth = 0;
     this.categories = [];

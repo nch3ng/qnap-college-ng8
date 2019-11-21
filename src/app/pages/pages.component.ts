@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
 import { User } from './../auth/_models/user.model';
 import { NgForm } from '@angular/forms';
@@ -8,17 +9,15 @@ import { ModalService } from '../_services/modal.service';
 import { Router, ActivatedRoute, RouteConfigLoadEnd, NavigationEnd, NavigationStart, NavigationCancel } from '@angular/router';
 import { IEventListener, EventBrokerService } from '../_services/event.broker.service';
 import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy } from '@angular/core';
-import { Subscription, Observable, noop } from 'rxjs';
+import { Subscription, Observable, noop, of } from 'rxjs';
 import { SearchService } from '../_services/search.service';
 import { NgcCookieConsentService, NgcInitializeEvent, NgcStatusChangeEvent } from 'ngx-cookieconsent';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import reframe from 'reframe.js';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../reducers';
-import { isLoggedIn, isLoggedOut, getUser } from '../auth/auth.selectors';
-import { AuthActions } from '../auth/action-types';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { SafeHtml } from '@angular/platform-browser';
+import { isLoggedIn, isLoggedOut, getUser } from '../auth/store/selectors';
+import { AuthActions } from '../auth/store/actions';
 
 @Component({
   selector: 'app-pages',
@@ -52,19 +51,14 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   private returnUrl = '/';
   deviceInfo: any = null;
 
-  private currentUser$: Observable<User> = this.store.pipe(
-    select(getUser)
-  );
-  private isLoggedIn$: Observable<boolean> = this.store.pipe(
-    select(isLoggedIn)
-  );
-  private isLoggedOut$: Observable<boolean> = this.store.pipe(
-    select(isLoggedOut)
-  );
-  private footerHTML$: Observable<SafeHtml>;
-  // _headerHTML = '';
+  private currentUser$: Observable<User>;
+  private isLoggedIn$: Observable<boolean>;
+  private isLoggedOut$: Observable<boolean>;
+  // tslint:disable-next-line:variable-name
+  _headerHTML = '';
   // tslint:disable-next-line:variable-name
   _footerHTML = '';
+  footerHTML$ = of();
   private addThisSub: Subscription;
   // keep refs to subscriptions to be able to unsubscribe later
   private popupOpenSubscription: Subscription;
@@ -116,6 +110,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.log(this.deviceInfo);
     const url = this.router.url;
     this.checkBanner(url);
+    // tslint:disable-next-line:no-string-literal
     this.returnUrl =  this.route.snapshot['_routerState'] && this.route.snapshot['_routerState'].url;
 
     this._myEventListener = this.eventBroker.listen<boolean>('loading', (value: boolean) => {
@@ -378,7 +373,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     // remove user from local storage to log user out
     this.loading = true;
     this.loggedIn = false;
-    this.store.dispatch(AuthActions.logout());
+    this.store.dispatch(AuthActions.logout({returnUrl: '/'}));
     // tslint:disable-next-line:no-string-literal
     const url = this.route.snapshot['_routerState'].url;
     setTimeout(() => {

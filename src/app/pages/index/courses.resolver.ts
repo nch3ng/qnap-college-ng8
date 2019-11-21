@@ -6,13 +6,17 @@ import { Observable, throwError } from 'rxjs';
 import { CourseService } from '../../_services/course.service';
 import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/reducers';
+import { loadAllCourses } from './store/actions';
 
 @Injectable()
 export class CoursesResolver implements Resolve<CourseDoc> {
   constructor(
     private courseService: CourseService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: object) {}
+    @Inject(PLATFORM_ID) private platformId: object,
+    private store: Store<AppState>) {}
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
@@ -49,6 +53,9 @@ export class CoursesResolver implements Resolve<CourseDoc> {
       // console.log(cs_value);
       promise = this.courseService.all(6, cs_value) ;
     }
+
+    this.store.dispatch(loadAllCourses({group_type: cs_value}));
+
     return promise.pipe(catchError(err => {
       this.router.navigate(['/maintenance']);
       return throwError(err);

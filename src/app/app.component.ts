@@ -6,8 +6,9 @@ import { Router, NavigationEnd} from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { NgxScreensizeService } from './modules/ngx-screensize/_services/ngx-screensize.service';
 import { AppState } from './reducers';
-import { Store } from '@ngrx/store';
-import { AuthActions } from './auth/action-types';
+import { Store, select } from '@ngrx/store';
+import { AuthActions } from './auth/store/actions';
+import { isLoggedIn, isLoggedOut } from './auth/store/selectors';
 
 
 @Component({
@@ -19,11 +20,21 @@ import { AuthActions } from './auth/action-types';
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   loaded = false;
 
+  isLoggedIn$: Observable<boolean>;
+  isLoggedOut$: Observable<boolean>;
+
   constructor(
     private router: Router,
     private readonly meta: MetaService,
     @Inject(PLATFORM_ID) private platformId: object,
     private store: Store<AppState>) {
+
+      this.isLoggedIn$ = this.store.pipe(
+        select(isLoggedIn)
+      );
+      this.isLoggedOut$ = this.store.pipe(
+        select(isLoggedOut)
+      );
   }
   ngOnInit() {
     // Initial state

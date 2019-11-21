@@ -93,7 +93,8 @@ const cookieConfig: NgcCookieConsentConfig = {
     EffectsModule.forRoot([AppEffects]),
     // StoreRouterConnectingModule.forRoot(),
     BrowserAnimationsModule,
-    LayoutModule
+    LayoutModule,
+    StoreRouterConnectingModule.forRoot()
   ],
   providers: [
     CoursesResolver,
