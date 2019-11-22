@@ -9,7 +9,7 @@ import { Observable, throwError } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { isLoggedIn, getAuthUser } from '../auth.select';
+import { isLoggedIn, getAuthUser } from '../store/selects';
 import { User } from '../_models/user.model';
 
 @Injectable()

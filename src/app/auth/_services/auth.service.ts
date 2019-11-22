@@ -1,7 +1,7 @@
 
-import { of,  Observable } from 'rxjs';
+import { of,  Observable, noop } from 'rxjs';
 
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map, tap} from 'rxjs/operators';
 import { AuthResponse, AuthResponseError } from './../../_models/authresponse';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
@@ -9,9 +9,10 @@ import { environment } from '../../../environments/environment';
 import { AuthService as SocialService } from 'angularx-social-login';
 import * as ResCode from '../../_codes/response';
 import { User } from '../_models/user.model';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { AuthActions } from '../action-types';
+import { AuthActions } from '../store/actions/action-types';
+import { getAuthUser } from '../store/selects';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +28,14 @@ export class AuthService {
   private updating = false;
 
   constructHeader() {
-    const currUser = JSON.parse(localStorage.getItem('currentUser'));
+    let currUser;
+    const user$ = this.store.pipe(
+      select(getAuthUser),
+      tap((user => {
+        currUser = user;
+      }))
+    ).subscribe(noop);
+    // const currUser = JSON.parse(localStorage.getItem('currentUser'));
     const token = ( currUser && 'token' in currUser) ? currUser.token : this.token;
     const headers = new Headers({ 'x-access-token': token });
     return { headers };
@@ -124,7 +132,7 @@ export class AuthService {
           delete user['salt'];
           // tslint:disable-next-line:no-string-literal
           delete user['hash'];
-          this.store.dispatch(AuthActions.login({ user }));
+          // this.store.dispatch(AuthActions.login({ user }));
           // localStorage.setItem('currentUser', JSON.stringify(user));
         }
         return user;
@@ -241,8 +249,16 @@ export class AuthService {
 
 
   jwtHttpClient() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    // console.log(currentUser);
+
+    const user$ = this.store.pipe(
+      select(getAuthUser)
+    );
+    let currentUser;
+    user$.subscribe(cUser => {
+      // console.log(cUser);
+      currentUser = cUser;
+    });
+    // const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser && currentUser.token) {
       let headers = new HttpHeaders({ 'x-access-token': currentUser.token });
       headers = headers.append('Content-Type', 'application/json');

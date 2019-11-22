@@ -12,6 +12,7 @@ import { CourseService } from '../../_services/course.service';
 import * as _ from 'lodash';
 import { AuthService } from '../../auth/_services/auth.service';
 import { FavService } from '../../_services/favorite.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-index',
@@ -200,20 +201,20 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.log('scrolled!!');
     this.loadingmore = true;
     this.page += 1;
-    let promise;
+    let course$: Observable<any>;
 
     // console.log(this.loggedIn)
     // console.log(this.cs)
     if (this.loggedIn && this.cs === 'favorites') {
-      promise = this.courseService.getFavoritedCourses(6, this.page);
+      course$ = this.courseService.getFavoritedCourses(6, this.page);
     } else {
       if (this.cs === 'favorites') {
         this.cs = 'publishedDate';
         this.changeDisplayTo({name: 'Latest', value: 'publishedDate'});
       }
-      promise = this.courseService.all(6, this.cs, this.page);
+      course$ = this.courseService.all(6, this.cs, this.page);
     }
-    promise.subscribe(
+    course$.subscribe(
       (newcoursedoc: CourseDoc) => {
         // console.log(newcoursedoc);
         for ( const doc of newcoursedoc.docs) {
@@ -235,6 +236,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loadingmore = false;
       },
       (err) => {
+        // console.log(err);
         this.router.navigate(['/maintenance']);
         return [];
       }

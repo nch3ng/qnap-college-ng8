@@ -19,9 +19,9 @@ import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angul
 import { FacebookLoginProvider } from 'angularx-social-login';
 import { environment } from 'src/environments/environment';
 import { StoreModule } from '@ngrx/store';
-import { authReducer } from './reducers';
+import { authReducer } from './store/reducers';
 import { EffectsModule } from '@ngrx/effects';
-import { AuthEffects } from './auth.effects';
+import { AuthEffects } from './store/effects';
 import { AuthService } from './_services/auth.service';
 
 const config = new AuthServiceConfig([

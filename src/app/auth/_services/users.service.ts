@@ -12,50 +12,50 @@ export class UsersService {
   apiRoot: string = environment.apiUrl;
 
   constructor(
-    private _authService: AuthService,
-    private _httpClient: HttpClient) {}
+    private authService: AuthService,
+    private httpClient: HttpClient) {}
 
   create(user: User) {
     const body = JSON.stringify(user);
-    const api_query = this.apiRoot + 'user';
-    return this._httpClient.post<User []>(api_query, body, this._authService.jwtHttpClient());
+    const apiQuery = this.apiRoot + 'user';
+    return this.httpClient.post<User []>(apiQuery, body, this.authService.jwtHttpClient());
   }
 
   delete(id: string) {
-    const api_query = this.apiRoot + `user/${id}`;
-    return this._httpClient.delete<User []>(api_query, this._authService.jwtHttpClient());
+    const apiQuery = this.apiRoot + `user/${id}`;
+    return this.httpClient.delete<User []>(apiQuery, this.authService.jwtHttpClient());
   }
 
   destroy() {
-    const api_query = this.apiRoot + `user/destroy`;
-    return this._httpClient.delete<User []>(api_query, this._authService.jwtHttpClient());
+    const apiQuery = this.apiRoot + `user/destroy`;
+    return this.httpClient.delete<User []>(apiQuery, this.authService.jwtHttpClient());
   }
 
   all(page?: number, limit?: number): Observable<User []> {
-    let api_query = this.apiRoot + 'users?';
+    let apiQuery = this.apiRoot + 'users?';
     if (page) {
-      api_query += 'page=' + page + '&';
+      apiQuery += 'page=' + page + '&';
     }
 
     if (limit) {
-      api_query += 'limit=' + limit;
+      apiQuery += 'limit=' + limit;
     }
-    return this._httpClient.get<User []>(api_query, this._authService.jwtHttpClient());
+    return this.httpClient.get<User []>(apiQuery, this.authService.jwtHttpClient());
   }
 
   setRole(uid: string, roleName: string) {
-    const api_query = this.apiRoot + `user/set_role/${uid}`;
+    const apiQuery = this.apiRoot + `user/set_role/${uid}`;
     const body = JSON.stringify({role: roleName});
-    return this._httpClient.put<User []>(api_query, body,this._authService.jwtHttpClient());
+    return this.httpClient.put<User []>(apiQuery, body, this.authService.jwtHttpClient());
   }
   getAbbv(uid: string) {
-    const api_query = this.apiRoot + `user/abvn/${uid}`;
-    return this._httpClient.get<User []>(api_query, this._authService.jwtHttpClient());
+    const apiQuery = this.apiRoot + `user/abvn/${uid}`;
+    return this.httpClient.get<User []>(apiQuery, this.authService.jwtHttpClient());
   }
 
   updateName(firstName: string, lastName: string) {
-    const api_query = this.apiRoot + `user/updateName`;
-    const body = JSON.stringify({firstName:firstName, lastName: lastName})
-    return this._httpClient.post<User []>(api_query, body, this._authService.jwtHttpClient());
+    const apiQuery = this.apiRoot + `user/updateName`;
+    const body = JSON.stringify({firstName, lastName});
+    return this.httpClient.post<User []>(apiQuery, body, this.authService.jwtHttpClient());
   }
 }

@@ -1,5 +1,4 @@
 import { FacebookLoginProvider, GoogleLoginProvider, AuthService as SocialService } from 'angularx-social-login';
-import { User } from './_models/user.model';
 import { AuthService } from './_services/auth.service';
 import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, NgZone, AfterViewInit, ElementRef } from '@angular/core';
@@ -17,7 +16,7 @@ import { AuthResponse } from '../_models/authresponse';
 import { tap, map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
-import { AuthActions } from './action-types';
+import { AuthActions } from './store/actions/action-types';
 
 // declare let gapi: any;
 
@@ -108,6 +107,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   ngOnInit() {
     this.signing = false;
+    // tslint:disable-next-line:no-string-literal
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/admin';
     this.aFormGroup = this.formBuilder.group({
       recaptcha: ['', Validators.required]
@@ -144,7 +144,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
       // console.log('This is your token: ', token);
       this.authService.login(f.value.email, f.value.password, token)
       .pipe(
-        map((response:AuthResponse) => {
+        map((response: AuthResponse) => {
           if (response.success === true) {
             const user = response.payload;
             user.token = response.token;
@@ -155,7 +155,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
               // tslint:disable-next-line:no-string-literal
               delete user['hash'];
 
-              this.store.dispatch(AuthActions.login( { user: user }));
+              this.store.dispatch(AuthActions.login( { user }));
 
               if (user.role.level === 1 && this.returnUrl === '/admin') {
                 this.returnUrl = '/admin/profile';
@@ -207,7 +207,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
             this.loading = false;
             this.registering = false;
             this.regError = true;
-            this.regErrorMsg = "Oops, account exists. <a [routerLink]=\"['/login']\">Login</a> with your account?";
+            this.regErrorMsg = 'Oops, account exists. <a [routerLink]="[\'/login\']">Login</a> with your account?';
           } else {
             this.toastr.success('A validation email has been sent, please validate by clicking the link in email');
           }
@@ -216,7 +216,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
           this.loading = false;
           this.registering = false;
           this.regError = true;
-          this.regErrorMsg = "Oops, account exists. <a [routerLink]=\"['/login']\">Login</a> with your account?";;
+          this.regErrorMsg = 'Oops, account exists. <a [routerLink]="[\'/login\']">Login</a> with your account?';
           // this.toastr.error('Error');
         }
       );
@@ -227,6 +227,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
     this.loading = true;
     this.socialService.signIn(FacebookLoginProvider.PROVIDER_ID).then((user) => {
       const requestBoody = {
+        // tslint:disable-next-line:no-string-literal
         accessToken: user['authToken']
       };
       this.authService.fbLogin(requestBoody).subscribe(
@@ -237,8 +238,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.router.navigate(['/user/create-password', res.uid], { queryParams: { token:  res.token, from: 'fb'} });
           } else {
-            
-            if (res.role.name === 'normal' && this.returnUrl == '/admin') {
+            if (res.role.name === 'normal' && this.returnUrl === '/admin') {
               this.returnUrl = '/admin/profile';
             }
 
@@ -347,7 +347,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
     //       (err: any) => {
     //         this.loading = false;
     //         this.signing = false;
-    //         // console.log(err); 
+    //         // console.log(err);
     //       }
     //     );
     //   },
@@ -394,7 +394,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
     this.captchaIsExpired = true;
     this.cdr.detectChanges();
   }
-  handleReady():void {
+  handleReady(): void {
     console.log('handle ready');
   }
   handleReset(): void {
@@ -407,7 +407,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.authService.resendVerification(this.uid).subscribe(
       (res) => {
-        this.toastr.success("Validation email has been sent.");
+        this.toastr.success('Validation email has been sent.');
       },
       (err) => {}
     );
@@ -421,12 +421,14 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
 
   togglePassword() {
     this.showPassword = !this.showPassword;
+    // tslint:disable-next-line:max-line-length
     this.passwordField.nativeElement.type === 'password' ? this.passwordField.nativeElement.type = 'text' : this.passwordField.nativeElement.type = 'password';
   }
 
   toggleConfirmPassword() {
     console.log(this.confirmPasswordField.nativeElement.value);
     this.showConfirmPassword = !this.showConfirmPassword;
+    // tslint:disable-next-line:max-line-length
     this.confirmPasswordField.nativeElement.type === 'password' ? this.confirmPasswordField.nativeElement.type = 'text' : this.confirmPasswordField.nativeElement.type = 'password';
   }
 }

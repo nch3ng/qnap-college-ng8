@@ -31,7 +31,7 @@
                   Tags: <a class="tag" *ngFor="let tag of course.tags" [routerLink]="['/tag/', tag]">{{tag}}</a>
                 </div>
                 
-                <div [appSecurity]="['super admin','admin']" class='pull-right'><a class="edit-button" href="#" [routerLink]="['/course', this.course._id, 'edit']" [queryParams]="{returnUrl: returnUrl}">Edit</a></div>
+                <div [appSecurity]="['super admin','admin']" class='pull-right'><a class="edit-button" href="#" [routerLink]="['/admin/course', this.course._id, 'edit']" [queryParams]="{returnUrl: returnUrl}">Edit</a></div>
                 <div *ngIf="course.slide_link" class='pull-right'><a class="download-slide" href="{{course.slide_link}}" target="_blank">Slideshare</a></div>
                 <div class='pull-right'><a class="fav-button" (click)="toggleFav()"><i [ngClass]="{'far': !favorited, 'fas': favorited}" class="fa-star"></i></a></div>
               </div>

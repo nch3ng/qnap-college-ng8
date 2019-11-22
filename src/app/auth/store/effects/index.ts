@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { createEffect, Actions, ofType } from '@ngrx/effects';
-import { AuthActions } from './action-types';
+import { AuthActions } from '../actions/action-types';
 import { tap } from 'rxjs/operators';
 import { AuthService as SocialService } from 'angularx-social-login';
 import { Router } from '@angular/router';

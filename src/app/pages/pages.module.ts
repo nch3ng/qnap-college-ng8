@@ -31,6 +31,11 @@ import { SecurityModule } from '../admin/_directives/security.module';
 import { UsersService } from '../auth/_services/users.service';
 import { SearchComponent } from './search/search.component';
 import { SearchResolver } from './search/search.resolver';
+import { StoreModule } from '@ngrx/store';
+import { coursesFeatureKey, coursesReducer } from '../store/courses/reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { CoursesEffect } from '../store/courses/effects';
+import { preferenceFeatureKey, preferenceReducer } from '../store/preference/reducers';
 
 @NgModule({
   imports: [
@@ -45,7 +50,10 @@ import { SearchResolver } from './search/search.resolver';
     InfiniteScrollModule,
     NgxCaptchaModule,
     SecurityModule,
-    PipesModule
+    PipesModule,
+    StoreModule.forFeature(coursesFeatureKey, coursesReducer),
+    StoreModule.forFeature(preferenceFeatureKey, preferenceReducer),
+    EffectsModule.forFeature([CoursesEffect])
   ],
   declarations: [
     PagesComponent,

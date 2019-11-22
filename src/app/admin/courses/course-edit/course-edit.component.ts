@@ -25,34 +25,37 @@ export class CourseEditComponent implements OnInit, OnDestroy {
   categories: Category [];
   returnUrl: string = null;
   constructor(
-    private _route: ActivatedRoute,
+    private route: ActivatedRoute,
     private ucfirstPipe: UcFirstPipe,
-    private _confirmService: ConfirmService,
-    private _courseService: CourseService,
-    private _toastr: ToastrService,
-    private _slugify: SlugifyPipe,
-    private _router: Router ) {
-    this.paramSub = this._route.params.subscribe(
+    private confirmService: ConfirmService,
+    private courseService: CourseService,
+    private toastr: ToastrService,
+    private slugify: SlugifyPipe,
+    private router: Router ) {
+
+    this.paramSub = this.route.params.subscribe(
       (params) => {
         // this.returnUrl = params['returnUrl'];
-
         console.log(params);
       }
     );
-    this.queryParamSub = this._route.queryParams.subscribe(
+    this.queryParamSub = this.route.queryParams.subscribe(
       (params) => {
+        // tslint:disable-next-line:no-string-literal
         this.returnUrl = params['returnUrl'];
 
         console.log(params);
       }
     );
 
-    this.dataSub = this._route.data.subscribe(
+    this.dataSub = this.route.data.subscribe(
       (data: Data) => {
         // console.log(data);
         this.course = data.course;
         this.course.tags = new Array();
+        // tslint:disable-next-line:no-string-literal
         if (this.course['keywords']) {
+          // tslint:disable-next-line:no-string-literal
           this.course.tags = this.course['keywords'].split(',');
         }
 
@@ -79,7 +82,7 @@ export class CourseEditComponent implements OnInit, OnDestroy {
   onSubmit(f: NgForm) {
     // console.log('onSubmit: edit');
     // console.log(f.value);
-    this._confirmService.open('Do you want to submit?').then(
+    this.confirmService.open('Do you want to submit?').then(
       () => {
         const tags = f.value.tags;
         f.value.tags = [];
@@ -89,29 +92,32 @@ export class CourseEditComponent implements OnInit, OnDestroy {
           if ( typeof tag === 'string') {
             f.value.tags.push(tag);
             tagname = tag;
+          // tslint:disable-next-line:no-string-literal
           } else if (typeof tag === 'object' && tag['value']) {
+            // tslint:disable-next-line:no-string-literal
             f.value.tags.push(tag['value']);
+            // tslint:disable-next-line:no-string-literal
             tagname = tag['value'];
           }
           f.value.keywords === '' ? f.value.keywords += tagname : f.value.keywords = f.value.keywords + ',' + tagname;
         }
+        // tslint:disable-next-line:no-string-literal
         f.value['_id'] = this.course._id;
-        f.value.category = this._slugify.transform(f.value.category);
-        this._courseService.update(f.value).subscribe(
+        f.value.category = this.slugify.transform(f.value.category);
+        this.courseService.update(f.value).subscribe(
           (course: Course) => {
-            this._toastr.success('Success');
+            this.toastr.success('Success');
             if (this.returnUrl) {
-              this._router.navigate([this.returnUrl]);
-            } else { 
-              this._router.navigate(['/courses']);
+              this.router.navigate([this.returnUrl]);
+            } else {
+              this.router.navigate(['/courses']);
             }
-            
         }, (error) => {
-          this._toastr.error('Failed to add a course');
+          this.toastr.error('Failed to add a course');
         });
       }).catch( () => {
         // Reject
-        // this._toastr.error('Failed to add a course');
+        // this.toastr.error('Failed to add a course');
     });
   }
 

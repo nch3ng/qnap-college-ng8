@@ -2,11 +2,9 @@ import { MetaService } from '@ngx-meta/core';
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { Router, NavigationEnd} from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import { NgxScreensizeService } from './modules/ngx-screensize/_services/ngx-screensize.service';
 import { Store } from '@ngrx/store';
 import { AppState } from './reducers';
-import { User } from './auth/_models/user.model';
-import { AuthActions } from './auth/action-types';
+import { AuthActions } from './auth/store/actions/action-types';
 
 
 @Component({
@@ -26,8 +24,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngOnInit() {
     const currentUser = localStorage.getItem('currentUser');
-
-    if (currentUser) {
+    if (!!currentUser && currentUser !== 'undefined') {
       this.store.dispatch(AuthActions.login({ user: JSON.parse(currentUser) }));
     }
   }

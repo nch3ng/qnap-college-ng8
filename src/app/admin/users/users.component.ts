@@ -33,34 +33,34 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   checkb = '<i class="fa fa-check"></i>';
   constructor(
-    private _route: ActivatedRoute,
-    private _router: Router,
-    private _confirmService: ConfirmService,
-    private _toastr: ToastrService,
-    private _usersService: UsersService,
-    private _roleService: RoleService,
-    private _eventBroker: EventBrokerService,
-    private _authService: AuthService,
-    private _commentsService: CommentsService) {
+    private route: ActivatedRoute,
+    private router: Router,
+    private confirmService: ConfirmService,
+    private toastr: ToastrService,
+    private usersService: UsersService,
+    private roleService: RoleService,
+    private eventBroker: EventBrokerService,
+    private authService: AuthService,
+    private commentsService: CommentsService) {
      }
 
   ngOnInit() {
-    this.sub = this._route.data.subscribe(
+    this.sub = this.route.data.subscribe(
       (data: Data) => {
-        console.log(data)
+        // console.log(data)
         if (data.doc) {
           this.doc = data.doc;
           this.users = this.doc.docs;
 
           for (const user of this.users) {
             setTimeout(() => {
-              this._commentsService.getCountOfCommentsByUserId(user._id).subscribe(
+              this.commentsService.getCountOfCommentsByUserId(user._id).subscribe(
                 (res) => {
                   user.commentCount = res.payload;
                 },
                 (err) => {}
               );
-            }, 500)
+            }, 500);
           }
           this.page = this.doc.page;
           this.pages = this.doc.pages;
@@ -68,7 +68,7 @@ export class UsersComponent implements OnInit, OnDestroy {
         }
       });
 
-    this._roleService.all().subscribe(
+    this.roleService.all().subscribe(
       (roles) => {
         this.roles = roles;
       },
@@ -83,66 +83,64 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   onDelete(user: User) {
-    this._confirmService.open('Do you want to submit?').then(
+    this.confirmService.open('Do you want to submit?').then(
       () => {
-        this._usersService.delete(user._id).subscribe(
+        this.usersService.delete(user._id).subscribe(
         (res: any) => {
-          this._toastr.success("Successfully delete a user");
-          this._router.navigate(['/admin/users']);
-          this._usersService.all(this.page, this.user_per_page).subscribe(
-            (res: any) => {
-              this.users = res.docs;
+          this.toastr.success('Successfully delete a user');
+          this.router.navigate(['/admin/users']);
+          this.usersService.all(this.page, this.user_per_page).subscribe(
+            (ress: any) => {
+              this.users = ress.docs;
             },
             (err) => {
-              this._toastr.error("Failed to pull users data");
+              this.toastr.error('Failed to pull users data');
             }
           );
         }, (err: any) => {
           console.log(err.error.message);
-          this._toastr.error("Failed to delete a user");
+          this.toastr.error('Failed to delete a user');
         });
       }).catch( () => {
         // Reject
-        // this._toastr.error('Failed to add a user');
+        // this.toastr.error('Failed to add a user');
     });
   }
 
   onSetRole(uid: string, roleName: string) {
     this.loading.emit(null);
-    this._eventBroker.emit<boolean>("loading", true);
-    this._usersService.setRole(uid, roleName).subscribe(
+    this.eventBroker.emit<boolean>('loading', true);
+    this.usersService.setRole(uid, roleName).subscribe(
       (res: any) => {
-        this._usersService.all(this.page, this.user_per_page).subscribe(
-          (res: any) => {
-            console.log(res);
-            this.users = res.docs;
-            this._eventBroker.emit<boolean>("loading", false);
+        this.usersService.all(this.page, this.user_per_page).subscribe(
+          (ress: any) => {
+            console.log(ress);
+            this.users = ress.docs;
+            this.eventBroker.emit<boolean>('loading', false);
           },
           (err) => {
-            this._toastr.error("Failed to pull users data");
-            this._eventBroker.emit<boolean>("loading", false);
+            this.toastr.error('Failed to pull users data');
+            this.eventBroker.emit<boolean>('loading', false);
           }
         );
       },
       (err: any) => {
         console.log(err);
-        this._eventBroker.emit<boolean>("loading", false);
+        this.eventBroker.emit<boolean>('loading', false);
       }
     );
   }
 
   onModelChange(e) {
-
-    
   }
 
   onSendResetPassword(user: User) {
-    this._confirmService.open(`Do you want to reset ${user.email}'s password?`).then(
+    this.confirmService.open(`Do you want to reset ${user.email}'s password?`).then(
       () => {
-        this._authService.resetPasswordAdmin(user._id).subscribe(
+        this.authService.resetPasswordAdmin(user._id).subscribe(
           (res: any) => {
             if (res.success) {
-              this._toastr.success(`User's reset password email has been sent`);
+              this.toastr.success(`User's reset password email has been sent`);
             }
           },
           (err: any) => {
@@ -152,9 +150,8 @@ export class UsersComponent implements OnInit, OnDestroy {
       }
     ).catch( () => {
       // Reject
-      // this._toastr.error('Failed to reset the password');
+      // this.toastr.error('Failed to reset the password');
     });
-    
   }
 
 
