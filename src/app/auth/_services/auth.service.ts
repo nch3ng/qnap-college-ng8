@@ -93,7 +93,7 @@ export class AuthService {
             delete ruser['hash'];
             if (ruser && ruser.token) {
               // store user details and jwt token in local storage to keep user logged in between page refreshes
-              this.store.dispatch(AuthActions.login({ user: ruser }));
+              this.store.dispatch(AuthActions.loginSuccess({ user: ruser }));
               // localStorage.setItem('currentUser', JSON.stringify(ruser));
             }
             return ruser;
@@ -146,7 +146,7 @@ export class AuthService {
     if (!!returnUrl) {
       return this.store.dispatch(AuthActions.logout({ returnUrl }));
     } else {
-      return this.store.dispatch(AuthActions.logout({}));
+      return this.store.dispatch(AuthActions.logout({returnUrl: '/'}));
     }
     // remove user from local storage to log user out
     // this.token = null;

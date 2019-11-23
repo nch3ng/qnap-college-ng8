@@ -5,6 +5,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { AppState } from './reducers';
 import { AuthActions } from './auth/store/actions/action-types';
+import { loadCurrentDisplay } from './store/preference/actions';
 
 
 @Component({
@@ -24,9 +25,15 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngOnInit() {
     const currentUser = localStorage.getItem('currentUser');
+    let currentDisplay = localStorage.getItem('currentDisplay')  || 'Latest';
     if (!!currentUser && currentUser !== 'undefined') {
-      this.store.dispatch(AuthActions.login({ user: JSON.parse(currentUser) }));
+      this.store.dispatch(AuthActions.loginSuccess({ user: JSON.parse(currentUser) }));
+    } else {
+      if (currentDisplay === 'My Favorite') {
+        currentDisplay = 'Latest';
+      }
     }
+    this.store.dispatch(loadCurrentDisplay({currentDisplay}));
   }
 
   ngAfterViewInit() {

@@ -58,7 +58,6 @@ import { preferenceFeatureKey, preferenceReducer } from '../store/preference/red
   declarations: [
     PagesComponent,
     IndexComponent,
-    SafePipe,
     CategoryComponent,
     SearchComponent,
     NotFoundComponent,

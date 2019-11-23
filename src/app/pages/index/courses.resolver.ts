@@ -30,22 +30,7 @@ export class CoursesResolver implements Resolve<CourseDoc> {
   ): Observable<CourseDoc> | Promise<CourseDoc> | CourseDoc {
 
     let cs = 'Latest';
-    // console.log('before');
-    // const isLoggedIn$ = this.uStore.pipe(
-    //   select(isLoggedIn)
-    // );
 
-    // isLoggedIn$.subscribe((loggedin) => {
-    //   console.log('inside ' + loggedin);
-    // });
-
-    // const currentDisplay$ = this.pStore.pipe(
-    //   select(getCurrentDisplay)
-    // );
-
-    // currentDisplay$.subscribe(currentDisplay => {
-    //   !currentDisplay ? noop() : cs = currentDisplay;
-    // });
     if (isPlatformBrowser(this.platformId)) {
       cs = localStorage.getItem('currentDisplay') || 'Latest';
     }
@@ -77,7 +62,6 @@ export class CoursesResolver implements Resolve<CourseDoc> {
       // console.log(cs_value);
       courses$ = this.courseService.all(6, cs_value) ;
     }
-    this.pStore.dispatch(setCurrentDisplay({ currentDisplay: cs_value}));
     this.cStore.dispatch(loadAllCourses({count: 6, currentDisplay: cs_value}));
     return courses$.pipe(catchError(err => {
       this.router.navigate(['/maintenance']);

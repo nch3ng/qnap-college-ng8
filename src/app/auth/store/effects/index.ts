@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 export class AuthEffects {
   login$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(AuthActions.login),
+      ofType(AuthActions.loginSuccess),
       tap(action => {
         localStorage.setItem('currentUser', JSON.stringify(action.user));
         if (!!action.returnUrl) {

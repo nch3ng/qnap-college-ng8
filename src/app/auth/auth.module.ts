@@ -19,7 +19,7 @@ import { SocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'angul
 import { FacebookLoginProvider } from 'angularx-social-login';
 import { environment } from 'src/environments/environment';
 import { StoreModule } from '@ngrx/store';
-import { authReducer } from './store/reducers';
+import { authReducer, authFeatureKey } from './store/reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './store/effects';
 import { AuthService } from './_services/auth.service';
@@ -48,7 +48,7 @@ export function provideConfig() {
     RouterModule,
     BrowserAnimationsModule,
     SocialLoginModule,
-    StoreModule.forFeature('auth', authReducer),
+    StoreModule.forFeature(authFeatureKey, authReducer),
     EffectsModule.forFeature([AuthEffects])
   ],
   declarations: [

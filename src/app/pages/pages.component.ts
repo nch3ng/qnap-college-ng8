@@ -7,12 +7,13 @@ import { ModalService } from '../_services/modal.service';
 import { Router, ActivatedRoute, RouteConfigLoadEnd, NavigationEnd, NavigationStart, NavigationCancel } from '@angular/router';
 import { IEventListener, EventBrokerService } from '../_services/event.broker.service';
 import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { SearchService } from '../_services/search.service';
 import { NgcCookieConsentService, NgcInitializeEvent, NgcStatusChangeEvent } from 'ngx-cookieconsent';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import reframe from 'reframe.js';
 import { ToastrService } from 'ngx-toastr';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-pages',
@@ -49,7 +50,7 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
   // tslint:disable-next-line:variable-name
   _headerHTML = '';
   // tslint:disable-next-line:variable-name
-  _footerHTML = '';
+  footerHTML$: Observable<any>;
   private addThisSub: Subscription;
   // keep refs to subscriptions to be able to unsubscribe later
   private popupOpenSubscription: Subscription;
@@ -96,7 +97,14 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     private eventBroker: EventBrokerService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private httpClient: HttpClient) {
+
+      let headers = new HttpHeaders();
+      headers = headers.append('Origin', 'https://college.qnap.com');
+      this.footerHTML$ = this.httpClient
+        // tslint:disable-next-line:max-line-length
+        .get('https://www.qnap.com/i/_aid/footer.php?lang_set=en-us&lc_demo=/solution/virtualization-station-3/en/&is_external=1&is_external=1', {responseType: 'text'});
   }
 
   ngOnInit() {
@@ -277,13 +285,6 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     // );
     // this.loadScript('//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5a0dd7aa711366bd');
     // tslint:disable-next-line:max-line-length
-    // this.httpClient.get('https://www.qnap.com/i/_aid/footer.php?lang_set=en-us&lc_demo=/solution/virtualization-station-3/en/', {responseType: 'text'}).subscribe(
-    //   (data) => {
-    //     this._footerHTML = data;
-    //   },
-    //   (error) => {
-    //   }
-    // );
   }
 
   ngOnDestroy() {
@@ -368,15 +369,6 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
       this.loading = false;
     }, 500);
   }
-
-  public get headerHTML(): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(this._headerHTML);
-  }
-
-  public get footerHTML(): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(this._footerHTML);
-  }
-
   private loadScript(script) {
     const body = document.body as HTMLDivElement;
     const scriptDOM = document.createElement('script');

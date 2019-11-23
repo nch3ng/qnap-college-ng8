@@ -28,6 +28,7 @@ import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { PreferenceEffect } from './store/preference/effects';
 
 const cookieConfig: NgcCookieConsentConfig = {
   cookie: {
@@ -86,7 +87,7 @@ const cookieConfig: NgcCookieConsentConfig = {
       }
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-    EffectsModule.forRoot([AppEffects]),
+    EffectsModule.forRoot([AppEffects, PreferenceEffect]),
     StoreRouterConnectingModule.forRoot(),
   ],
   providers: [

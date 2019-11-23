@@ -13,6 +13,10 @@ import * as _ from 'lodash';
 import { AuthService } from '../../auth/_services/auth.service';
 import { FavService } from '../../_services/favorite.service';
 import { Observable } from 'rxjs';
+import { AppState } from 'src/app/reducers';
+import { Store, select } from '@ngrx/store';
+import { setCurrentDisplay } from 'src/app/store/preference/actions';
+import { getCurrentDisplay } from 'src/app/store/preference/selects';
 
 @Component({
   selector: 'app-index',
@@ -61,7 +65,8 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     private ssService: NgxScreensizeService,
     private courseService: CourseService,
     private router: Router,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private store: Store<AppState>) {
     }
 
   ngOnInit() {
@@ -75,7 +80,13 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.menuOpenForStyle = false;
     this.displayOptions = this.courseService.options;
     this.loading = false;
-    this.currentDisplay = localStorage.getItem('currentDisplay');
+
+    this.store.pipe(
+      select(getCurrentDisplay)
+    ).subscribe(currentDisplay => {
+      this.currentDisplay = currentDisplay;
+    });
+
     if (this.currentDisplay) {
       this.cs = this.courseService.optionsMapping[this.currentDisplay];
     }
@@ -172,19 +183,21 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   changeDisplayTo(option) {
     this.loading = true;
-    localStorage.setItem('currentDisplay', option.name);
+
+    this.store.dispatch(setCurrentDisplay({currentDisplay: option.name}));
+    // localStorage.setItem('currentDisplay', option.name);
     this.currentDisplay = option.name;
     this.cs = option.value;
     this.page = 1;
     this.toggleMenu();
-    let promise;
+    let courses$;
 
     if (this.loggedIn && option.value === 'favorites') {
-      promise = this.courseService.getFavoritedCourses(6, this.page);
+      courses$ = this.courseService.getFavoritedCourses(6, this.page);
     } else {
-      promise = this.courseService.all(6, option.value, this.page);
+      courses$ = this.courseService.all(6, option.value, this.page);
     }
-    promise.subscribe(
+    courses$.subscribe(
       (coursedoc: CourseDoc) => {
         this.courses = coursedoc.docs;
         this.runCheckFavorites(this.courses);
@@ -203,8 +216,6 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     this.page += 1;
     let course$: Observable<any>;
 
-    // console.log(this.loggedIn)
-    // console.log(this.cs)
     if (this.loggedIn && this.cs === 'favorites') {
       course$ = this.courseService.getFavoritedCourses(6, this.page);
     } else {
@@ -225,7 +236,7 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
               doc.isFavorited = false;
             }
           }
-          this.courses.push(doc);
+          this.courses = [ ...this.courses, doc];
         }
 
         if (this.page === this.totalPages) {

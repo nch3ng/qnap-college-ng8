@@ -35,16 +35,6 @@
             <p *ngFor='let option of displayOptions' class="{{option.class}}" (click)="changeDisplayTo(option)">{{option.name}}</p>
           </div>
         </div>
-        <!-- <span class="fa fa-bars"></span> -->
-        <!-- <span>
-          <a href="#" class='btn-index menu'>
-            <span class="icon">
-              <span class="l1"></span>
-              <span class="l2"></span>
-              <span class="l3"></span>
-            </span>
-          </a>
-        </span> -->
         <span class="grid-options">
           <span (click)="onGridSelect(3)"><i class="fa fa-th"></i></span>
           <span (click)="onGridSelect(2)"><i class="fa fa-th-large"></i></span>

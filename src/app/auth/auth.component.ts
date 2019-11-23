@@ -155,7 +155,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
               // tslint:disable-next-line:no-string-literal
               delete user['hash'];
 
-              this.store.dispatch(AuthActions.login( { user }));
+              this.store.dispatch(AuthActions.loginSuccess( { user }));
 
               if (user.role.level === 1 && this.returnUrl === '/admin') {
                 this.returnUrl = '/admin/profile';
@@ -242,7 +242,7 @@ export class AuthComponent implements OnInit, OnDestroy, AfterViewInit {
               this.returnUrl = '/admin/profile';
             }
 
-            this.store.dispatch(AuthActions.login({ user: res, returnUrl: this.returnUrl }));
+            this.store.dispatch(AuthActions.loginSuccess({ user: res, returnUrl: this.returnUrl }));
             // this.router.navigate([]);
           }
         },
