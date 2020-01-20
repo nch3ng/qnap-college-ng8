@@ -99,31 +99,6 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     );
 
     this.keywords = '';
-
-    // gapi.load('client:auth2', () => {
-    //   console.log('client:auth2 loaded');
-
-    //   gapi.auth2.init({
-    //     'clientId': environment.GoogleClientID,
-    //     // 'apiKey': environment.GoogleYoutubeAPIKey,
-    //     'scope': 'profile email',
-    //     'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest']
-    //   }).then((onInit) => {
-    //     console.log('auth2 initialized')
-    //     this.GoogleAuth = gapi.auth2.getAuthInstance();
-    //     this.isGoogleSignedIn = this.GoogleAuth.isSignedIn.get();
-    //     // Listen for sign-in state changes.
-    //     this.GoogleAuth.isSignedIn.listen(this.signinChanged.bind(this));
-    //     // Listen for changes to current user.
-    //     this.GoogleAuth.currentUser.listen(this.userChanged.bind(this));
-
-    //     // if (this.GoogleAuth.isSignedIn.get() == true) {
-    //     //   this.GoogleAuth.signIn();
-    //     // }
-    //   }, (onError) => {
-    //     console.error(onError);
-    //   });
-    // });
   }
 
   ngOnInit() {

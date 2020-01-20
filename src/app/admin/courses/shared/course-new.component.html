@@ -19,6 +19,12 @@
             <div class="col-6">
               <input class="form-control m-input m-input-lg" type="text" [(ngModel)]="course.code_name" name="code_name" required #name="ngModel" placeholder="Code Name" id="codename-text-input">
             </div>
+
+            <div *ngIf="true" class="offset-md-4 col-8">
+              <div class="field-error">
+                Only alphabets and number are allowed in Code Name
+              </div>
+            </div>
           </div>
           <div class="form-group m-form__group row">
             <label for="example-text-input" class="col-2 col-form-label offset-md-2">

@@ -39,6 +39,7 @@ import { RoleService } from '../_services/role.service';
     NgPipesModule,
     MomentModule,
     FormsModule,
+    ReactiveFormsModule,
     TagInputModule,
     ReactiveFormsModule,
     NgSelectModule,
