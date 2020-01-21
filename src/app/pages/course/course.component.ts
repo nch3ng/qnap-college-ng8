@@ -139,6 +139,9 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.routeSub = this.route.data.subscribe(
       (data: Data) => {
+        console.log('###################');
+        console.log(data);
+        console.log('###################');
         if (data.course) {
           this.course = data.course;
           this.courseService.quickClicked(this.course);
