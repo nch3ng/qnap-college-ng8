@@ -1,9 +1,10 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { Course } from '../../_models/course';
 import { ActivatedRoute, Data } from '@angular/router';
 import { SearchService } from '../../_services/search.service';
 import { CourseService } from '../../_services/course.service';
 import { ModalService } from '../../_services/modal.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-search',
@@ -25,10 +26,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private _searchService: SearchService,
     private _courseService: CourseService,
-    private _modalService: ModalService) {
+    private _modalService: ModalService,
+    @Inject(PLATFORM_ID) private platformId: object) {
     this.func = 'search';
     this.courses = [];
-    const localColSetting = localStorage.getItem('grid-col');
+    let localColSetting = null;
+    if (isPlatformBrowser(this.platformId)) {
+      localColSetting = localStorage.getItem('grid-col');
+    }
     this.gridCol = localColSetting ? + localColSetting : 2;
     this.gridCol === 2 ? this.gridClass = 'col-md-5' : this.gridClass = 'col-md-4';
   }
@@ -65,7 +70,9 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   onGridSelect(grid: number) {
     this.gridCol = grid;
-    localStorage.setItem('grid-col', this.gridCol.toString());
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('grid-col', this.gridCol.toString());
+    }
   }
 
   onModalPop(course: Course) {

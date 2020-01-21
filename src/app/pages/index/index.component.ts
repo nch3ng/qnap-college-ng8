@@ -1,7 +1,7 @@
 import { MetaService } from '@ngx-meta/core';
 import { CourseDoc } from './../../_models/document';
 import { ModalService } from './../../_services/modal.service';
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { Category } from '../../_models/category';
 import { CategoryService } from '../../_services/category.service';
 import { ActivatedRoute, Data, Router } from '@angular/router';
@@ -17,6 +17,7 @@ import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
 import { setCurrentDisplay } from 'src/app/store/preference/actions';
 import { getCurrentDisplay } from 'src/app/store/preference/selects';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-index',
@@ -66,11 +67,15 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
     private courseService: CourseService,
     private router: Router,
     private authService: AuthService,
-    private store: Store<AppState>) {
+    private store: Store<AppState>,
+    @Inject(PLATFORM_ID) private platformId: object) {
     }
 
   ngOnInit() {
-    const localColSetting = localStorage.getItem('grid-col');
+    let localColSetting = null;
+    if (isPlatformBrowser(this.platformId)) {
+      localColSetting = localStorage.getItem('grid-col');
+    }
     this.cGridWidth = 0;
     this.categories = [];
     this.courses = [];
@@ -162,7 +167,9 @@ export class IndexComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onGridSelect(grid: number) {
     this.gridCol = grid;
-    localStorage.setItem('grid-col', this.gridCol.toString());
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('grid-col', this.gridCol.toString());
+    }
   }
 
   onModalPop(course: Course) {

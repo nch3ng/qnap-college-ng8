@@ -6,7 +6,7 @@ import { NgxScreensizeService } from '../modules/ngx-screensize/_services/ngx-sc
 import { ModalService } from '../_services/modal.service';
 import { Router, ActivatedRoute, RouteConfigLoadEnd, NavigationEnd, NavigationStart, NavigationCancel } from '@angular/router';
 import { IEventListener, EventBrokerService } from '../_services/event.broker.service';
-import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, HostListener, AfterViewInit, OnDestroy, ChangeDetectorRef, PLATFORM_ID, Inject } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { SearchService } from '../_services/search.service';
 import { NgcCookieConsentService, NgcInitializeEvent, NgcStatusChangeEvent } from 'ngx-cookieconsent';
@@ -14,6 +14,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import reframe from 'reframe.js';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-pages',
@@ -98,7 +99,8 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: AuthService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private httpClient: HttpClient) {
+    private httpClient: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: object) {
 
       let headers = new HttpHeaders();
       headers = headers.append('Origin', 'https://college.qnap.com');
@@ -159,8 +161,10 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
         //   console.log('This is your token: ', token);
         // });
         let startTime = 0;
-        if (localStorage.getItem(this.youtubeRef)) {
-          startTime = +localStorage.getItem(this.youtubeRef);
+        if (isPlatformBrowser(this.platformId)) {
+          if (localStorage.getItem(this.youtubeRef)) {
+            startTime = +localStorage.getItem(this.youtubeRef);
+          }
         }
         this.player.loadVideoById(this.youtubeRef, startTime);
       }
@@ -169,7 +173,9 @@ export class PagesComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modalCloseSub = this.modalService.close.subscribe(
       () => {
         // console.log(this.player.getCurrentTime());
-        localStorage.setItem(this.youtubeRef.toString(), this.cleanTime().toString());
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.setItem(this.youtubeRef.toString(), this.cleanTime().toString());
+        }
         this.modalOpen = false;
         this.youtubeSrc = '';
         this.youtubeRef = '';

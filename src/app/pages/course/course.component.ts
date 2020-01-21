@@ -3,7 +3,10 @@ import { CommentsService } from './../../_services/comment.service';
 import { UsersService } from './../../auth/_services/users.service';
 import { AuthService } from './../../auth/_services/auth.service';
 import { CourseDoc } from './../../_models/document';
-import { Component, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef, ViewChild, ElementRef, ApplicationRef } from '@angular/core';
+import {  Component,
+          OnInit,
+          OnDestroy,
+          AfterViewInit, ChangeDetectorRef, ViewChild, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Data, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Course } from '../../_models/course';
@@ -17,6 +20,7 @@ import { ReCaptchaV3Service, InvisibleReCaptchaComponent } from 'ngx-captcha';
 import { ConfirmService } from '../../_services/confirm.service';
 import { AddScriptService } from '../../_services/addscript.service';
 import { FavService } from '../../_services/favorite.service';
+import { isPlatformBrowser } from '@angular/common';
 
 // declare let gapi: any;
 
@@ -87,7 +91,8 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     private eventBroker: EventBrokerService,
     private confirmService: ConfirmService,
     private addScript: AddScriptService,
-    private favService: FavService) {
+    private favService: FavService,
+    @Inject(PLATFORM_ID) private platformId: object) {
 
     this.courseService.all(4, 'watched').subscribe(
       (coursedoc: CourseDoc) => {
@@ -221,8 +226,6 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     this.addScript.addScript('https://www.google.com/recaptcha/api.js', { render: sitekey });
     window.scrollTo(0, 0);
     this.addThisSub = this.addThis.initAddThis('ra-5a0dd7aa711366bd', false).subscribe();
-
-    
   }
 
   ngOnDestroy() {
@@ -240,7 +243,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     let scriptOnPage = false;
     const selector = 'script[src*="addthis_widget.js"]';
     const matches = document.querySelectorAll(selector);
-    if(matches.length > 0) {
+    if (matches.length > 0) {
         scriptOnPage = true;
     }
     return scriptOnPage;
@@ -251,7 +254,9 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     // remove user from local storage to log user out
     this.setloading(true);
     this.loggedIn = false;
-    localStorage.removeItem('currentUser');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('currentUser');
+    }
     // tslint:disable-next-line:no-string-literal
     const url = this.route.snapshot['_routerState'].url;
     setTimeout(() => {

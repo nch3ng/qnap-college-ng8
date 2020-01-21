@@ -24,8 +24,13 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: object) {
   }
   ngOnInit() {
-    const currentUser = localStorage.getItem('currentUser');
-    let currentDisplay = localStorage.getItem('currentDisplay')  || 'Latest';
+    let currentUser = null;
+    let currentDisplay = 'Latest';
+    if (isPlatformBrowser(this.platformId)) {
+      currentUser = localStorage.getItem('currentUser');
+      currentDisplay = localStorage.getItem('currentDisplay')  || 'Latest';
+    }
+
     if (!!currentUser && currentUser !== 'undefined') {
       this.store.dispatch(AuthActions.loginSuccess({ user: JSON.parse(currentUser) }));
     } else {
