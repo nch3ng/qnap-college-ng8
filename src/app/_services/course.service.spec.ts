@@ -1,11 +1,9 @@
-import { Course } from './../../../../goqnap/server/models/course.model';
 import { COURSES } from './test-data';
 import { CourseDoc } from './../_models/document';
 import { AuthService } from './../auth/_services/auth.service';
 import { CourseService } from './course.service';
 import { TestBed, } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 
 describe('CourseService', async () => {
