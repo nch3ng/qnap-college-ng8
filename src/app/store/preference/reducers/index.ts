@@ -11,7 +11,8 @@ export const initialPreferenceState: PreferenceState = {
   currentDisplay: undefined
 };
 
-export const preferenceReducer = createReducer(
+// tslint:disable-next-line:variable-name
+const _preferenceReducer = createReducer(
   initialPreferenceState,
   on(loadCurrentDisplay, (state, action) => {
     return {
@@ -24,3 +25,8 @@ export const preferenceReducer = createReducer(
     };
   })
 );
+
+export function preferenceReducer(state, action) {
+  return _preferenceReducer(state, action);
+}
+

@@ -18,7 +18,8 @@ export const initialCoursesState: CoursesState = {
   total: 0,
 };
 
-export const coursesReducer = createReducer(
+// tslint:disable-next-line:variable-name
+const _coursesReducer = createReducer(
   initialCoursesState,
   on(allCoursesLoaded, (state, action) => {
     return {
@@ -29,3 +30,7 @@ export const coursesReducer = createReducer(
     };
   })
 );
+
+export function coursesReducer(state, action) {
+  return _coursesReducer(state, action);
+}

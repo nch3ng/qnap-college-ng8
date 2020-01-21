@@ -15,7 +15,8 @@ export const initialAuthState: AuthState = {
   user: undefined
 };
 
-export const authReducer = createReducer(
+// tslint:disable-next-line:variable-name
+const _authReducer = createReducer(
   initialAuthState,
   on(AuthActions.loginSuccess, (state, action) => {
     return {
@@ -28,3 +29,7 @@ export const authReducer = createReducer(
     };
   })
 );
+
+export function authReducer(state, action) {
+  return _authReducer(state, action);
+}

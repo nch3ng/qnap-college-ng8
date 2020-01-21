@@ -104,11 +104,13 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.commentEnabled = environment.comment_enable;
 
-    this.meta.setTitle('QNAP College - Get the Most out of Your QNAP NAS');
+    this.meta.setTitle('This is a course of ' + this.course.title);
     this.meta.setTag('og:image', '//img.youtube.com/vi/tcGIYGr4guA/sddefault.jpg');
     this.meta.setTag('og:type', 'video.other');
     this.meta.setTag('og:description', 'Course description');
     this.meta.setTag('og:url', 'https://college.qnap.com/course/5b5105d1e449ca649bbc1675');
+    // debugger
+    this.meta.setTag('og:title', 'This is a course of ' + this.course.title);
 
     this.authService.verify().subscribe(
       (res) => {
@@ -220,8 +222,7 @@ export class CourseComponent implements OnInit, OnDestroy, AfterViewInit {
     window.scrollTo(0, 0);
     this.addThisSub = this.addThis.initAddThis('ra-5a0dd7aa711366bd', false).subscribe();
 
-    // debugger
-    this.meta.setTag('og:title', 'This is course of ' + this.course.title);
+    
   }
 
   ngOnDestroy() {
